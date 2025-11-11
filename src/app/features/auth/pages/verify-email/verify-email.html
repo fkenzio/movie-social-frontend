@@ -1,1 +1,54 @@
-<p>verify-email works!</p>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Verificar Email</h1>
+      <p>Hemos enviado un código de 6 dígitos a</p>
+      <p class="email-highlight">{{ email }}</p>
+    </div>
+
+    <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Code -->
+      <div class="form-group">
+        <label for="code">Código de Verificación</label>
+        <input 
+          id="code"
+          type="text" 
+          formControlName="code"
+          placeholder="123456"
+          maxlength="6"
+          [class.error]="code?.invalid && code?.touched"
+        />
+        <div class="error-message" *ngIf="code?.invalid && code?.touched">
+          <span *ngIf="code?.errors?.['required']">El código es requerido</span>
+          <span *ngIf="code?.errors?.['minlength'] || code?.errors?.['maxlength']">
+            Debe tener 6 dígitos
+          </span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">Verificar</span>
+        <span *ngIf="isLoading">Verificando...</span>
+      </button>
+
+      <!-- Resend Code -->
+      <div class="auth-links">
+        <p>¿No recibiste el código? 
+          <button 
+            type="button" 
+            class="link-button"
+            (click)="resendCode()"
+            [disabled]="isResending"
+          >
+            {{ isResending ? 'Reenviando...' : 'Reenviar código' }}
+          </button>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

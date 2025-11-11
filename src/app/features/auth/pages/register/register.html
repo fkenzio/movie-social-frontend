@@ -1,1 +1,118 @@
-<p>register works!</p>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Crear Cuenta</h1>
+      <p>Únete a la comunidad de Cineminha</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Username -->
+      <div class="form-group">
+        <label for="username">Nombre de Usuario</label>
+        <input 
+          id="username"
+          type="text" 
+          formControlName="username"
+          placeholder="usuario123"
+          [class.error]="username?.invalid && username?.touched"
+        />
+        <div class="error-message" *ngIf="username?.invalid && username?.touched">
+          <span *ngIf="username?.errors?.['required']">El usuario es requerido</span>
+          <span *ngIf="username?.errors?.['minlength']">Mínimo 3 caracteres</span>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input 
+          id="email"
+          type="email" 
+          formControlName="email"
+          placeholder="tu@email.com"
+          [class.error]="email?.invalid && email?.touched"
+        />
+        <div class="error-message" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">El email es requerido</span>
+          <span *ngIf="email?.errors?.['email']">Email inválido</span>
+        </div>
+      </div>
+
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="full_name">Nombre Completo (Opcional)</label>
+        <input 
+          id="full_name"
+          type="text" 
+          formControlName="full_name"
+          placeholder="Tu Nombre"
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="password-input">
+          <input 
+            id="password"
+            [type]="showPassword ? 'text' : 'password'" 
+            formControlName="password"
+            placeholder="••••••••"
+            [class.error]="password?.invalid && password?.touched"
+          />
+          <button 
+            type="button" 
+            class="toggle-password"
+            (click)="togglePasswordVisibility('password')"
+          >
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']">La contraseña es requerida</span>
+          <span *ngIf="password?.errors?.['minlength']">Mínimo 6 caracteres</span>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Contraseña</label>
+        <div class="password-input">
+          <input 
+            id="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'" 
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+            [class.error]="confirmPassword?.invalid && confirmPassword?.touched"
+          />
+          <button 
+            type="button" 
+            class="toggle-password"
+            (click)="togglePasswordVisibility('confirm')"
+          >
+            {{ showConfirmPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
+          <span *ngIf="confirmPassword?.errors?.['required']">Confirma tu contraseña</span>
+          <span *ngIf="confirmPassword?.errors?.['passwordMismatch']">Las contraseñas no coinciden</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">Crear Cuenta</span>
+        <span *ngIf="isLoading">Creando cuenta...</span>
+      </button>
+
+      <!-- Links -->
+      <div class="auth-links">
+        <p>¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia Sesión</a></p>
+      </div>
+    </form>
+  </div>
+</div>

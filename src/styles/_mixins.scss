@@ -1,0 +1,35 @@
+@import 'variables';
+
+@mixin respond-to($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin card {
+  background: $secondary-color;
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  box-shadow: $shadow-md;
+}
+
+@mixin button-primary {
+  background: $primary-color;
+  color: $light-text;
+  border: none;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: darken($primary-color, 10%);
+    transform: translateY(-2px);
+  }
+}

@@ -1,0 +1,223 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.navbar {
+  background: $secondary-color;
+  box-shadow: $shadow-md;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-sm $spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $light-text;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $primary-color;
+    }
+
+    span {
+      @media (max-width: 480px) {
+        display: none;
+      }
+    }
+  }
+}
+
+.navbar-menu {
+  display: flex;
+  gap: $spacing-lg;
+  align-items: center;
+}
+
+.nav-link {
+  color: $light-text;
+  text-decoration: none;
+  font-weight: 500;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: $dark-bg;
+    color: $primary-color;
+  }
+
+  &.active {
+    color: $primary-color;
+    background: $dark-bg;
+  }
+}
+
+.navbar-user {
+  position: relative;
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    cursor: pointer;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: $dark-bg;
+    }
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: $primary-color;
+    color: $light-text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .user-name {
+    color: $light-text;
+    font-weight: 500;
+  }
+
+  .dropdown-icon {
+    color: $gray-text;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+  }
+
+  .user-info:hover .dropdown-icon {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: $secondary-color;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    display: block;
+    padding: $spacing-sm $spacing-md;
+    color: $light-text;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-size: 0.95rem;
+
+    &:hover {
+      background: $dark-bg;
+    }
+
+    &.logout {
+      color: #ff4444;
+    }
+
+    &:first-child {
+      border-radius: $border-radius-md $border-radius-md 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 $border-radius-md $border-radius-md;
+    }
+  }
+
+  .dropdown-divider {
+    margin: $spacing-xs 0;
+    border: none;
+    border-top: 1px solid $dark-bg;
+  }
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: $light-text;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: $spacing-xs;
+
+  @media (max-width: $tablet) {
+    display: block;
+  }
+}
+
+.mobile-menu {
+  background: $darker-bg;
+  padding: $spacing-md 0;
+  display: none;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+
+  &.show {
+    display: flex;
+    max-height: 400px;
+  }
+
+  .mobile-link {
+    padding: $spacing-sm $spacing-md;
+    color: $light-text;
+    text-decoration: none;
+    transition: background 0.3s ease;
+
+    &:hover,
+    &.active {
+      background: $secondary-color;
+      color: $primary-color;
+    }
+  }
+}
+
+@media (max-width: $tablet) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: $tablet) {
+  .hide-desktop {
+    display: none !important;
+  }
+}

@@ -1,1 +1,77 @@
-<p>social-feed works!</p>
+<app-navbar></app-navbar>
+
+<div class="feed-container">
+  <div class="feed-header">
+    <h1>Feed Social</h1>
+    <p>Bienvenido, <strong>{{ currentUser?.username }}</strong>! 🎉</p>
+  </div>
+
+  <div class="feed-content">
+    <!-- Post Card -->
+    <div class="post-card" *ngFor="let post of posts">
+      <!-- Post Header -->
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar">{{ post.user.avatar }}</div>
+          <div class="user-details">
+            <span class="username">{{ post.user.username }}</span>
+            <span class="time">{{ post.time }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post Content -->
+      <div class="post-body">
+        <!-- Review Post -->
+        <div *ngIf="post.type === 'review'" class="post-review">
+          <div class="movie-title">
+            🎬 <strong>{{ post.movie }}</strong>
+          </div>
+          <div class="rating-display" *ngIf="post.rating">
+            ⭐ {{ post.rating }}/10
+          </div>
+          <p class="post-text">{{ post.content }}</p>
+        </div>
+
+        <!-- Rating Post -->
+        <div *ngIf="post.type === 'rating'" class="post-rating">
+          <p class="post-text">
+            Calificó <strong>{{ post.movie }}</strong>
+          </p>
+          <div class="rating-display large">
+            ⭐ {{ post.rating }}/10
+          </div>
+        </div>
+
+        <!-- List Post -->
+        <div *ngIf="post.type === 'list'" class="post-list">
+          <p class="post-text">{{ post.content }}</p>
+          <div class="movie-chips">
+            <span class="movie-chip" *ngFor="let movie of post.movies">
+              {{ movie }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post Footer -->
+      <div class="post-footer">
+        <button class="action-btn">
+          ❤️ {{ post.likes }}
+        </button>
+        <button class="action-btn">
+          💬 {{ post.comments }}
+        </button>
+        <button class="action-btn">
+          🔗 Compartir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="posts.length === 0">
+    <h2>No hay posts todavía</h2>
+    <p>Empieza a seguir usuarios o califica películas para ver contenido aquí</p>
+  </div>
+</div>

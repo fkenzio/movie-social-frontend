@@ -6,7 +6,7 @@ import { guestGuard } from './core/guards/guest.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/auth/login',
+    redirectTo: '/feed',
     pathMatch: 'full'
   },
   {
@@ -14,14 +14,13 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
   },
-  // Comentadas por ahora hasta que las creemos
-  // {
-  //   path: 'feed',
-  //   canActivate: [authGuard],
-  //   loadChildren: () => import('./features/feed/feed.module').then(m => m.FeedModule)
-  // },
+  {
+    path: 'feed',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/feed/feed.module').then(m => m.FeedModule)
+  },
   {
     path: '**',
-    redirectTo: '/auth/login'
+    redirectTo: '/feed'
   }
 ];

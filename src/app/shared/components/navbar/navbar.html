@@ -1,1 +1,75 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-brand">
+      <a routerLink="/feed" class="logo">
+        🎬 <span>Cineminha</span>
+      </a>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="navbar-menu hide-mobile">
+      <a routerLink="/feed" routerLinkActive="active" class="nav-link">
+        Feed
+      </a>
+      <a routerLink="/movies/search" routerLinkActive="active" class="nav-link">
+        Películas
+      </a>
+      <a routerLink="/lists" routerLinkActive="active" class="nav-link">
+        Mis Listas
+      </a>
+      <a routerLink="/rankings" routerLinkActive="active" class="nav-link">
+        Rankings
+      </a>
+    </div>
+
+    <!-- User Menu -->
+    <div class="navbar-user">
+      <div class="user-info" (click)="toggleMenu()">
+        <div class="user-avatar">
+          {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'U' }}
+        </div>
+        <span class="user-name hide-mobile">{{ currentUser?.username }}</span>
+        <span class="dropdown-icon">▼</span>
+      </div>
+
+      <!-- Dropdown Menu -->
+      <div class="dropdown-menu" [class.show]="isMenuOpen">
+        <a routerLink="/profile" class="dropdown-item" (click)="closeMenu()">
+          👤 Mi Perfil
+        </a>
+        <a routerLink="/notifications" class="dropdown-item" (click)="closeMenu()">
+          🔔 Notificaciones
+        </a>
+        <a routerLink="/recommendations" class="dropdown-item" (click)="closeMenu()">
+          ✨ Recomendaciones
+        </a>
+        <hr class="dropdown-divider">
+        <button class="dropdown-item logout" (click)="logout()">
+          🚪 Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn hide-desktop" (click)="toggleMenu()">
+      {{ isMenuOpen ? '✕' : '☰' }}
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu hide-desktop" [class.show]="isMenuOpen">
+    <a routerLink="/feed" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+      Feed
+    </a>
+    <a routerLink="/movies/search" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+      Películas
+    </a>
+    <a routerLink="/lists" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+      Mis Listas
+    </a>
+    <a routerLink="/rankings" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+      Rankings
+    </a>
+  </div>
+</nav>

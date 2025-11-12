@@ -49,87 +49,27 @@ export class AuthService {
 
   // ==================== LOGIN ====================
   login(credentials: LoginRequest): Observable<AuthResponse> {
-  // TEMPORAL: Simular login exitoso
-  const mockResponse: AuthResponse = {
-    access_token: 'mock-token-123',
-    token_type: 'Bearer',
-    user: {
-      id: 1,
-      username: credentials.email.split('@')[0], // Usar parte del email como username
-      email: credentials.email,
-      full_name: 'Usuario Demo',
-      bio: 'Amante del cine',
-      avatar_url: undefined,
-      is_verified: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  };
-
-  // Simular delay de red
-  return new Observable(observer => {
-    setTimeout(() => {
-      this.handleAuthSuccess(mockResponse);
-      this.toastr.success('Bienvenido de nuevo!', 'Login exitoso');
-      this.router.navigate(['/feed']);
-      observer.next(mockResponse);
-      observer.complete();
-    }, 1000);
-  });
-
-  // COMENTAR ESTO TEMPORALMENTE
-  // return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-  //   tap(response => {
-  //     this.handleAuthSuccess(response);
-  //     this.toastr.success('Bienvenido de nuevo!', 'Login exitoso');
-  //     this.router.navigate(['/feed']);
-  //   })
-  // );
+   return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+     tap(response => {
+       this.handleAuthSuccess(response);
+       this.toastr.success('Bienvenido de nuevo!', 'Login exitoso');
+       this.router.navigate(['/feed']);
+     })
+   );
 }
 
   // ==================== REGISTER ====================
  register(userData: RegisterRequest): Observable<AuthResponse> {
-  // TEMPORAL: Simular registro exitoso
-  const mockResponse: AuthResponse = {
-    access_token: 'mock-token-123',
-    token_type: 'Bearer',
-    user: {
-      id: 1,
-      username: userData.username,
-      email: userData.email,
-      full_name: userData.full_name || '',
-      bio: undefined,
-      avatar_url: undefined,
-      is_verified: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  };
-
-  return new Observable(observer => {
-    setTimeout(() => {
-      this.toastr.success(
-        'Revisa tu correo para verificar tu cuenta', 
-        'Registro exitoso'
-      );
-      localStorage.setItem('pending_verification_email', userData.email);
-      this.router.navigate(['/auth/verify-email']);
-      observer.next(mockResponse);
-      observer.complete();
-    }, 1000);
-  });
-
-  // COMENTAR ESTO
-  // return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
-  //   tap(response => {
-  //     this.toastr.success(
-  //       'Revisa tu correo para verificar tu cuenta', 
-  //       'Registro exitoso'
-  //     );
-  //     localStorage.setItem('pending_verification_email', userData.email);
-  //     this.router.navigate(['/auth/verify-email']);
-  //   })
-  // );
+  return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
+     tap(response => {
+       this.toastr.success(
+         'Revisa tu correo para verificar tu cuenta', 
+         'Registro exitoso'
+       );
+       localStorage.setItem('pending_verification_email', userData.email);
+       this.router.navigate(['/auth/verify-email']);
+     })
+   );
 }
 
   // ==================== VERIFY EMAIL ====================

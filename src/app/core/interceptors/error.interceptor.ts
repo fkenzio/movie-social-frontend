@@ -15,26 +15,30 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.error instanceof ErrorEvent) {
         errorMessage = `Error: ${error.error.message}`;
       } else {
+        // Intentar obtener el mensaje del backend
+        const backendMessage = error.error?.detail || error.error?.message;
+        
         switch (error.status) {
           case 400:
-            errorMessage = error.error?.message || 'Solicitud incorrecta';
+            errorMessage = backendMessage || 'Solicitud incorrecta';
+            console.log('Error 400 completo:', error.error); // ⬅️ Debug
             break;
           case 401:
-            errorMessage = 'No autorizado. Por favor inicia sesión';
+            errorMessage = backendMessage || 'No autorizado. Por favor inicia sesión';
             localStorage.removeItem('access_token');
             router.navigate(['/auth/login']);
             break;
           case 403:
-            errorMessage = 'No tienes permisos para realizar esta acción';
+            errorMessage = backendMessage || 'No tienes permisos para realizar esta acción';
             break;
           case 404:
-            errorMessage = 'Recurso no encontrado';
+            errorMessage = backendMessage || 'Recurso no encontrado';
             break;
           case 500:
-            errorMessage = 'Error del servidor. Intenta más tarde';
+            errorMessage = backendMessage || 'Error del servidor. Intenta más tarde';
             break;
           default:
-            errorMessage = error.error?.message || `Error: ${error.status}`;
+            errorMessage = backendMessage || `Error: ${error.status}`;
         }
       }
 

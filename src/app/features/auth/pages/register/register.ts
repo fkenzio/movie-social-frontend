@@ -45,30 +45,28 @@ export class RegisterComponent {
     return null;
   }
 
-  onSubmit(): void {
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
-      return;
-    }
-
-    this.isLoading = true;
-
-    // Remover confirmPassword antes de enviar
-    const { confirmPassword, ...userData } = this.registerForm.value;
-    
-    this.authService.register(userData).subscribe({
-      next: () => {
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.toastr.error(
-          error.error?.message || 'Error al registrarse',
-          'Error'
-        );
-      }
-    });
+onSubmit(): void {
+  if (this.registerForm.invalid) {
+    this.registerForm.markAllAsTouched();
+    return;
   }
+
+  this.isLoading = true;
+
+  const { confirmPassword, ...userData } = this.registerForm.value;
+  
+  this.authService.register(userData).subscribe({
+    next: () => {
+      this.isLoading = false;
+      // El toastr de éxito ya está en el AuthService
+    },
+    error: () => {
+      this.isLoading = false;
+      // ⬇️ NO agregues toastr aquí, el interceptor lo maneja
+      // El interceptor ya muestra el error automáticamente
+    }
+  });
+}
 
   togglePasswordVisibility(field: 'password' | 'confirm'): void {
     if (field === 'password') {

@@ -1,1 +1,119 @@
-<p>detail works!</p>
+<app-navbar></app-navbar>
+
+<!-- Loading -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner"></div>
+  <p>Cargando película...</p>
+</div>
+
+<!-- Movie Detail -->
+<div *ngIf="!isLoading && movie" class="movie-detail">
+  
+  <!-- Backdrop Hero -->
+  <div class="movie-hero" [style.background-image]="'url(' + getBackdropUrl(movie.backdrop_path) + ')'">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="movie-poster-large">
+        <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" />
+      </div>
+      
+      <div class="movie-header">
+        <h1>{{ movie.title }}</h1>
+        <p class="tagline" *ngIf="movie.tagline">{{ movie.tagline }}</p>
+        
+        <div class="movie-meta">
+          <span class="year">{{ movie.release_date.substring(0, 4) }}</span>
+          <span class="separator">•</span>
+          <span class="runtime">{{ getRuntime(movie.runtime) }}</span>
+          <span class="separator">•</span>
+          <span class="rating" [style.color]="getRatingColor(movie.vote_average)">
+            ⭐ {{ movie.vote_average.toFixed(1) }}
+          </span>
+        </div>
+
+        <div class="genres">
+          <span *ngFor="let genre of movie.genres" class="genre-tag">
+            {{ genre.name }}
+          </span>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary">
+            ⭐ Calificar
+          </button>
+          <button class="btn btn-secondary">
+            📝 Reseñar
+          </button>
+          <button class="btn btn-secondary">
+            ➕ Agregar a Lista
+          </button>
+          <button *ngIf="trailerUrl" class="btn btn-secondary" (click)="toggleTrailer()">
+            🎬 Ver Trailer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trailer Modal -->
+  <div *ngIf="showTrailer" class="trailer-modal" (click)="toggleTrailer()">
+    <div class="trailer-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="toggleTrailer()">✕</button>
+      <iframe
+        *ngIf="trailerUrl"
+        [src]="trailerUrl"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Movie Info -->
+  <div class="movie-content">
+    
+    <!-- Overview -->
+    <section class="section">
+      <h2>Sinopsis</h2>
+      <p class="overview">{{ movie.overview || 'No hay sinopsis disponible.' }}</p>
+    </section>
+
+    <!-- Cast -->
+    <section class="section" *ngIf="getCast().length > 0">
+      <h2>Reparto Principal</h2>
+      <div class="cast-grid">
+        <div *ngFor="let actor of getCast()" class="cast-card">
+          <div class="cast-photo">
+            <img 
+              [src]="actor.profile_path ? getImageUrl(actor.profile_path) : 'assets/no-avatar.png'" 
+              [alt]="actor.name"
+            />
+          </div>
+          <div class="cast-info">
+            <p class="actor-name">{{ actor.name }}</p>
+            <p class="character-name">{{ actor.character }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Similar Movies -->
+    <section class="section" *ngIf="getSimilarMovies().length > 0">
+      <h2>Películas Similares</h2>
+      <div class="similar-grid">
+        <div 
+          *ngFor="let similar of getSimilarMovies()" 
+          class="similar-card"
+          [routerLink]="['/movies/detail', similar.id]"
+        >
+          <img [src]="getImageUrl(similar.poster_path)" [alt]="similar.title" />
+          <div class="similar-info">
+            <h4>{{ similar.title }}</h4>
+            <span class="similar-rating">⭐ {{ similar.vote_average.toFixed(1) }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

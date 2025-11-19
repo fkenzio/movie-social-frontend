@@ -26,6 +26,7 @@ export interface MoviesResponse {
 
 export interface MovieDetail extends Movie {
   runtime: number;
+  tagline: string;
   genres: { id: number; name: string }[];
   credits: {
     cast: Array<{
@@ -47,6 +48,7 @@ export interface MovieDetail extends Movie {
   similar: MoviesResponse;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,7 +63,7 @@ export class MovieApiService {
   }
 
   getMovieDetails(movieId: number): Observable<MovieDetail> {
-    return this.http.get<MovieDetail>(`${this.apiUrl}/details/${movieId}`);
+  return this.http.get<MovieDetail>(`${this.apiUrl}/details/${movieId}`);
   }
 
   getPopularMovies(page: number = 1): Observable<MoviesResponse> {

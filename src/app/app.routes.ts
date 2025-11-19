@@ -22,6 +22,12 @@ export const routes: Routes = [
     path: 'movies',
     canActivate: [authGuard],
     children: [
+
+      {
+        path: 'detail/:id',
+        loadComponent: () => import('./features/movies/pages/detail/detail').then(m => m.DetailComponent)
+      },
+
       {
         path: 'search',
         loadComponent: () => import('./features/movies/pages/search/search').then(m => m.SearchComponent)

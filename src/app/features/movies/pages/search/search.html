@@ -1,1 +1,44 @@
-<p>search works!</p>
+<app-navbar></app-navbar>
+
+<div class="search-container">
+  <div class="search-header">
+    <h1>🔍 Buscar Películas</h1>
+    <div class="search-box">
+      <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Busca por título, actor, director..."
+        class="search-input"
+      />
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Buscando películas...</p>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="noResults && !isLoading" class="no-results">
+    <span class="icon">🎬</span>
+    <h2>No se encontraron resultados</h2>
+    <p>Intenta con otro término de búsqueda</p>
+  </div>
+
+  <!-- Results -->
+  <div *ngIf="movies.length > 0 && !isLoading" class="movies-grid">
+    <div *ngFor="let movie of movies" class="movie-card" [routerLink]="['/movies/detail', movie.id]">
+      <div class="movie-poster">
+        <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" />
+        <div class="movie-rating">
+          ⭐ {{ movie.vote_average.toFixed(1) }}
+        </div>
+      </div>
+      <div class="movie-info">
+        <h3>{{ movie.title }}</h3>
+        <p class="movie-year">{{ movie.release_date.substring(0, 4) }}</p>
+      </div>
+    </div>
+  </div>
+</div>

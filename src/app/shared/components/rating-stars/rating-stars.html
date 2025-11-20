@@ -1,1 +1,37 @@
-<p>rating-stars works!</p>
+<div 
+  class="rating-stars" 
+  [class.readonly]="readonly"
+  [class.size-small]="size === 'small'"
+  [class.size-medium]="size === 'medium'"
+  [class.size-large]="size === 'large'"
+  (mouseleave)="onMouseLeave()"
+>
+  <div class="stars-container">
+    <div *ngFor="let star of getStars(); let i = index" class="star">
+      <!-- Fondo (estrella vacía) -->
+      <svg class="star-bg" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#404040"/>
+      </svg>
+      
+      <!-- Estrella llena/media -->
+      <svg *ngIf="star.full" class="star-fill full" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#ffd700"/>
+      </svg>
+      
+      <svg *ngIf="star.half" class="star-fill half" viewBox="0 0 24 24" fill="none">
+        <defs>
+          <clipPath [id]="'half-clip-' + i">
+            <rect x="0" y="0" width="12" height="24"/>
+          </clipPath>
+        </defs>
+        <path [attr.clip-path]="'url(#half-clip-' + i + ')'" d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#ffd700"/>
+      </svg>
+      
+      <!-- Áreas de click invisibles -->
+      <div class="click-area click-left" (click)="onStarClick(i, true)" (mouseenter)="onStarHover(i, true)"></div>
+      <div class="click-area click-right" (click)="onStarClick(i, false)" (mouseenter)="onStarHover(i, false)"></div>
+    </div>
+  </div>
+  
+  <span class="rating-text" *ngIf="rating > 0">{{ rating.toFixed(1) }}</span>
+</div>

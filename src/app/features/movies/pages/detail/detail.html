@@ -38,9 +38,9 @@
         </div>
 
         <div class="action-buttons">
-          <button class="btn btn-primary">
-            ⭐ Calificar
-          </button>
+        <button class="btn btn-primary" (click)="openRatingModal()">
+            ⭐ {{ userRating > 0 ? 'Editar Calificación' : 'Calificar' }}
+        </button>
           <button class="btn btn-secondary">
             📝 Reseñar
           </button>
@@ -50,6 +50,76 @@
           <button *ngIf="trailerUrl" class="btn btn-secondary" (click)="toggleTrailer()">
             🎬 Ver Trailer
           </button>
+        </div>
+        <!-- Rating Stats Section -->
+        <div class="rating-stats" *ngIf="movieStats">
+          <div class="stat-card">
+            <h3>TMDB</h3>
+            <div class="stat-rating">
+              <app-rating-stars 
+                [rating]="getTmdbRating()" 
+                [readonly]="true"
+                size="medium">
+              </app-rating-stars>
+              <span class="rating-count">({{ movie.vote_count || 0 }} votos)</span>
+            </div>
+          </div>
+          
+          <div class="stat-card highlight">
+            <h3>Cineminha</h3>
+            <div class="stat-rating">
+              <app-rating-stars 
+                [rating]="movieStats.users_average" 
+                [readonly]="true"
+                size="medium">
+              </app-rating-stars>
+              <span class="rating-count">({{ movieStats.total_ratings }} usuarios)</span>
+            </div>
+          </div>
+          
+          <div class="stat-card user-rating" *ngIf="userRating > 0">
+            <h3>Tu Calificación</h3>
+            <div class="stat-rating">
+              <app-rating-stars 
+                [rating]="userRating" 
+                [readonly]="true"
+                size="medium">
+              </app-rating-stars>
+              <button class="btn-icon" (click)="deleteRating()" title="Eliminar">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating Modal -->
+        <div *ngIf="showRatingModal" class="rating-modal" (click)="closeRatingModal()">
+          <div class="rating-modal-content" (click)="$event.stopPropagation()">
+            <button class="close-btn" (click)="closeRatingModal()">✕</button>
+            
+            <h2>Califica esta película</h2>
+            <p class="movie-title">{{ movie.title }}</p>
+            
+            <div class="rating-selector">
+              <app-rating-stars 
+                [rating]="tempRating" 
+                (ratingChange)="onRatingChange($event)"
+                [readonly]="false"
+                size="large">
+              </app-rating-stars>
+            </div>
+            
+            <div class="modal-actions">
+              <button class="btn btn-secondary" (click)="closeRatingModal()">
+                Cancelar
+              </button>
+              <button 
+                class="btn btn-primary" 
+                (click)="saveRating()"
+                [disabled]="isSavingRating || tempRating === 0"
+              >
+                {{ isSavingRating ? 'Guardando...' : 'Guardar Calificación' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

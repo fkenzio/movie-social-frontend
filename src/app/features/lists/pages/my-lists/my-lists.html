@@ -1,1 +1,124 @@
-<p>my-lists works!</p>
+<app-navbar></app-navbar>
+
+<div class="lists-container">
+  <div class="lists-header">
+    <h1>📝 Mis Listas</h1>
+    <button 
+      *ngIf="!showCreateForm" 
+      class="btn btn-primary"
+      (click)="showCreateForm = true"
+    >
+      ➕ Nueva Lista
+    </button>
+  </div>
+
+  <!-- Create Form -->
+  <div *ngIf="showCreateForm" class="create-form-card">
+    <h3>Crear Nueva Lista</h3>
+    <form (ngSubmit)="createList()">
+      <div class="form-group">
+        <label for="name">Nombre *</label>
+        <input 
+          id="name"
+          type="text"
+          [(ngModel)]="newListName"
+          name="name"
+          placeholder="Ej: Mis Favoritas"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea 
+          id="description"
+          [(ngModel)]="newListDescription"
+          name="description"
+          placeholder="Descripción de la lista (opcional)"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input 
+            type="checkbox"
+            [(ngModel)]="isPublic"
+            name="isPublic"
+          />
+          <span>Lista pública (otros usuarios pueden verla)</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          (click)="resetForm()"
+        >
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="isCreating || !newListName.trim()"
+        >
+          {{ isCreating ? 'Creando...' : 'Crear Lista' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando listas...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && lists.length === 0 && !showCreateForm" class="empty-state">
+    <div class="empty-icon">📝</div>
+    <h2>No tienes listas creadas</h2>
+    <p>Crea tu primera lista para empezar a organizar tus películas</p>
+    <button class="btn btn-primary" (click)="showCreateForm = true">
+      Crear Primera Lista
+    </button>
+  </div>
+
+  <!-- Lists Grid -->
+  <div *ngIf="!isLoading && lists.length > 0" class="lists-grid">
+    <div 
+      *ngFor="let list of lists" 
+      class="list-card"
+      [routerLink]="['/lists/detail', list.id]"
+    >
+      <div class="list-header">
+        <h3>{{ list.name }}</h3>
+        <button 
+          class="btn-icon delete"
+          (click)="deleteList(list, $event)"
+          title="Eliminar lista"
+        >
+          🗑️
+        </button>
+      </div>
+
+      <p class="list-description" *ngIf="list.description">
+        {{ list.description }}
+      </p>
+
+      <div class="list-meta">
+        <span class="movies-count">
+          🎬 {{ list.movies_count }} {{ list.movies_count === 1 ? 'película' : 'películas' }}
+        </span>
+        <span class="visibility" [class.public]="list.is_public">
+          {{ list.is_public ? '🌐 Pública' : '🔒 Privada' }}
+        </span>
+      </div>
+
+      <div class="list-footer">
+        <span class="date">{{ list.created_at | date: 'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

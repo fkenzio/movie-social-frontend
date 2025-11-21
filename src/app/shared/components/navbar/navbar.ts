@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
 
   currentUser: User | null = null;
   isMenuOpen = false;
+  isMobileMenuOpen = false;
 
   ngOnInit(): void {
     // Suscribirse al usuario actual
@@ -29,12 +30,25 @@ export class NavbarComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  logout(): void {
-    this.authService.logout();
-    this.isMenuOpen = false;
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
   closeMenu(): void {
     this.isMenuOpen = false;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+  }
+
+  closeAllMenus(): void {
+    this.isMenuOpen = false;
+    this.isMobileMenuOpen = false;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.closeAllMenus();
   }
 }

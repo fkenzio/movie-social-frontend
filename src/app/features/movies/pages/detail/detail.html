@@ -44,9 +44,16 @@
           <button class="btn btn-secondary">
             📝 Reseñar
           </button>
-          <button class="btn btn-secondary">
+          <button class="btn btn-secondary" (click)="openAddToListModal()">
             ➕ Agregar a Lista
           </button>
+          <!-- Add to List Modal -->
+          <app-add-to-list-modal
+            *ngIf="showAddToListModal && movie"
+            [movieId]="movie.id"
+            [movieTitle]="movie.title"
+            (close)="closeAddToListModal()"
+          ></app-add-to-list-modal>
           <button *ngIf="trailerUrl" class="btn btn-secondary" (click)="toggleTrailer()">
             🎬 Ver Trailer
           </button>

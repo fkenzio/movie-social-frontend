@@ -1,0 +1,67 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="onClose()">✕</button>
+    
+    <h2>Agregar a Lista</h2>
+    <p class="movie-title">{{ movieTitle }}</p>
+    
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando listas...</p>
+    </div>
+    
+    <!-- Lists -->
+    <div *ngIf="!isLoading" class="lists-container">
+      <div *ngIf="lists.length === 0" class="empty-state">
+        <p>No tienes listas creadas</p>
+        <button class="btn btn-primary" (click)="showCreateForm = true">
+          Crear Primera Lista
+        </button>
+      </div>
+      
+      <div *ngIf="lists.length > 0" class="lists-grid">
+        <div *ngFor="let list of lists" class="list-item" (click)="toggleMovie(list)">
+          <div class="checkbox">
+            <input type="checkbox" [checked]="list.in_list" readonly />
+            <span class="checkmark">{{ list.in_list ? '✓' : '' }}</span>
+          </div>
+          <span class="list-name">{{ list.list_name }}</span>
+        </div>
+      </div>
+      
+      <!-- Create New List -->
+      <div class="create-section">
+        <button 
+          *ngIf="!showCreateForm && lists.length > 0" 
+          class="btn btn-secondary btn-block"
+          (click)="showCreateForm = true"
+        >
+          ➕ Nueva Lista
+        </button>
+        
+        <div *ngIf="showCreateForm" class="create-form">
+          <input 
+            type="text"
+            [(ngModel)]="newListName"
+            placeholder="Nombre de la lista..."
+            class="input"
+            (keyup.enter)="createNewList()"
+          />
+          <div class="form-actions">
+            <button class="btn btn-secondary" (click)="showCreateForm = false; newListName = ''">
+              Cancelar
+            </button>
+            <button 
+              class="btn btn-primary" 
+              (click)="createNewList()"
+              [disabled]="isCreating || !newListName.trim()"
+            >
+              {{ isCreating ? 'Creando...' : 'Crear' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

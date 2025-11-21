@@ -46,29 +46,29 @@
         </a>
         <hr class="dropdown-divider">
         <button class="dropdown-item logout" (click)="logout()">
-          🚪 Cerrar Sesión
+           Cerrar Sesión
         </button>
       </div>
     </div>
 
     <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn hide-desktop" (click)="toggleMenu()">
-      {{ isMenuOpen ? '✕' : '☰' }}
+    <button class="mobile-menu-btn hide-desktop" (click)="toggleMobileMenu()">
+      {{ isMobileMenuOpen ? '✕' : '☰' }}
     </button>
   </div>
 
   <!-- Mobile Menu -->
-  <div class="mobile-menu hide-desktop" [class.show]="isMenuOpen">
-    <a routerLink="/feed" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+  <div class="mobile-menu hide-desktop" [class.show]="isMobileMenuOpen">
+    <a routerLink="/feed" routerLinkActive="active" class="mobile-link" (click)="closeMobileMenu()">
       Feed
     </a>
-    <a routerLink="/movies/search" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+    <a routerLink="/movies/search" routerLinkActive="active" class="mobile-link" (click)="closeMobileMenu()">
       Películas
     </a>
-    <a routerLink="/lists" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+    <a routerLink="/lists" routerLinkActive="active" class="mobile-link" (click)="closeMobileMenu()">
       Mis Listas
     </a>
-    <a routerLink="/rankings" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+    <a routerLink="/rankings" routerLinkActive="active" class="mobile-link" (click)="closeMobileMenu()">
       Rankings
     </a>
   </div>

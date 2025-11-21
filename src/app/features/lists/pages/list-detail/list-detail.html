@@ -1,1 +1,152 @@
-<p>list-detail works!</p>
+<app-navbar></app-navbar>
+
+<div class="list-detail-container">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando lista...</p>
+  </div>
+
+  <!-- List Content -->
+  <div *ngIf="!isLoading && list" class="list-content">
+    
+    <!-- Header -->
+    <div class="list-header">
+      <button class="btn-back" (click)="goBack()">
+        ← Volver
+      </button>
+
+      <div class="header-content">
+        <!-- View Mode -->
+        <div *ngIf="!isEditMode" class="view-mode">
+          <h1>{{ list.name }}</h1>
+          <p class="description" *ngIf="list.description">{{ list.description }}</p>
+          
+          <div class="list-meta">
+            <span class="movies-count">
+              🎬 {{ list.movies_count }} {{ list.movies_count === 1 ? 'película' : 'películas' }}
+            </span>
+            <span class="visibility" [class.public]="list.is_public">
+              {{ list.is_public ? '🌐 Pública' : '🔒 Privada' }}
+            </span>
+            <span class="date">
+              📅 {{ list.created_at | date: 'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div *ngIf="isEditMode" class="edit-mode">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input 
+              type="text" 
+              [(ngModel)]="editName"
+              placeholder="Nombre de la lista"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea 
+              [(ngModel)]="editDescription"
+              placeholder="Descripción (opcional)"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="header-actions">
+          <button 
+            *ngIf="!isEditMode" 
+            class="btn btn-secondary"
+            (click)="toggleEditMode()"
+          >
+            ✏️ Editar
+          </button>
+          
+          <button 
+            *ngIf="!isEditMode" 
+            class="btn btn-danger"
+            (click)="deleteList()"
+          >
+            🗑️ Eliminar Lista
+          </button>
+
+          <button 
+            *ngIf="isEditMode" 
+            class="btn btn-secondary"
+            (click)="toggleEditMode()"
+          >
+            Cancelar
+          </button>
+          
+          <button 
+            *ngIf="isEditMode" 
+            class="btn btn-primary"
+            (click)="saveChanges()"
+            [disabled]="isSaving"
+          >
+            {{ isSaving ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="movies.length === 0" class="empty-state">
+      <div class="empty-icon">🎬</div>
+      <h2>Lista vacía</h2>
+      <p>Aún no has agregado películas a esta lista</p>
+      <button class="btn btn-primary" routerLink="/movies/search">
+        Buscar Películas
+      </button>
+    </div>
+
+    <!-- Movies Grid -->
+    <div *ngIf="movies.length > 0" class="movies-grid">
+      <div 
+        *ngFor="let movie of movies" 
+        class="movie-card"
+      >
+        <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+          <img 
+            *ngIf="movie.details?.poster_path" 
+            [src]="getImageUrl(movie.details.poster_path)" 
+            [alt]="movie.details?.title"
+          />
+          <div *ngIf="!movie.details?.poster_path" class="no-poster">
+            🎬
+          </div>
+          
+          <div class="movie-overlay">
+            <div class="movie-rating" *ngIf="movie.details?.vote_average">
+              ⭐ {{ (movie.details.vote_average / 2).toFixed(1) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="movie-info">
+          <h3 [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+            {{ movie.details?.title || 'Cargando...' }}
+          </h3>
+          <p class="movie-year" *ngIf="movie.details?.release_date">
+            {{ movie.details.release_date.substring(0, 4) }}
+          </p>
+          <p class="added-date">
+            Agregada: {{ movie.added_at | date: 'dd/MM/yyyy' }}
+          </p>
+        </div>
+
+        <button 
+          class="btn-remove"
+          (click)="removeMovie(movie, $event)"
+          title="Eliminar de la lista"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

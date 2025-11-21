@@ -7,11 +7,12 @@ import { RatingStarsComponent } from '@shared/components/rating-stars/rating-sta
 import { MovieApiService, MovieDetail } from '../../services/movie-api';
 import { RatingService, MovieRatingStats } from '../../services/rating';
 import { ToastrService } from 'ngx-toastr';
+import { AddToListModalComponent } from '@shared/components/add-to-list-modal/add-to-list-modal';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterLink, RatingStarsComponent],
+  imports: [CommonModule, NavbarComponent, RouterLink, RatingStarsComponent, AddToListModalComponent],
   templateUrl: './detail.html',
   styleUrls: ['./detail.scss']
 })
@@ -193,4 +194,14 @@ export class DetailComponent implements OnInit {
     if (!this.movie) return 0;
     return this.movie.vote_average / 2;
   }
+
+  showAddToListModal = false;
+  openAddToListModal(): void {
+    this.showAddToListModal = true;
+  }
+
+  closeAddToListModal(): void {
+    this.showAddToListModal = false;
+  }
+
 }

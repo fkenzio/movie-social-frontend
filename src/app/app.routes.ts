@@ -19,6 +19,20 @@ export const routes: Routes = [
     loadChildren: () => import('./features/feed/feed.module').then(m => m.FeedModule)
   },
   {
+    path: 'lists',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/lists/pages/my-lists/my-lists').then(m => m.MyListsComponent)
+      },
+      {
+        path: 'detail/:id',
+        loadComponent: () => import('./features/lists/pages/list-detail/list-detail').then(m => m.ListDetailComponent)
+      }
+    ]
+  },
+  {
     path: 'movies',
     canActivate: [authGuard],
     children: [

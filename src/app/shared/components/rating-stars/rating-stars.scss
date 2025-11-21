@@ -84,24 +84,20 @@
 // Tamaños
 .size-small {
   font-size: 16px;
-  
-  .stars-container {
-    gap: 2px;
-  }
+  gap: 1px;
 }
 
 .size-medium {
   font-size: 24px;
-  
-  .stars-container {
-    gap: 4px;
-  }
+  gap: 2px;
 }
 
 .size-large {
-  font-size: 40px;
+  font-size: 40px; 
+  gap: 4px;
   
-  .stars-container {
-    gap: 6px;
+  @media (max-width: $mobile) {
+    font-size: 32px; 
+    gap: 3px;
   }
 }

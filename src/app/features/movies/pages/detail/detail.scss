@@ -413,6 +413,10 @@
   width: 100%;
   position: relative;
   
+  @media (max-width: $mobile) {
+    padding: $spacing-lg; // ⬅️ Menos padding en móvil
+  }
+  
   .close-btn {
     position: absolute;
     top: $spacing-md;
@@ -437,12 +441,24 @@
     color: $light-text;
     margin: 0 0 $spacing-sm 0;
     font-size: 1.8rem;
+    
+    @media (max-width: $mobile) {
+      font-size: 1.5rem; // ⬅️ Título más pequeño en móvil
+    }
   }
   
   .movie-title {
     color: $gray-text;
     margin: 0 0 $spacing-xl 0;
     font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+    @media (max-width: $mobile) {
+      font-size: 1rem; // ⬅️ Más pequeño en móvil
+      margin-bottom: $spacing-lg;
+    }
   }
   
   .rating-selector {
@@ -451,6 +467,20 @@
     background: rgba($dark-bg, 0.3);
     border-radius: $border-radius-md;
     margin-bottom: $spacing-xl;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px; // ⬅️ Altura mínima para evitar saltos
+    
+    @media (max-width: $mobile) {
+      padding: $spacing-lg 0; // ⬅️ Menos padding en móvil
+      margin-bottom: $spacing-lg;
+      min-height: 100px;
+    }
+    
+    app-rating-stars {
+      display: inline-block; // ⬅️ Importante para centrar
+    }
   }
   
   .modal-actions {
@@ -458,8 +488,20 @@
     gap: $spacing-md;
     justify-content: flex-end;
     
+    @media (max-width: $mobile) {
+      flex-direction: column; // ⬅️ Botones en columna en móvil
+      
+      .btn {
+        width: 100%;
+      }
+    }
+    
     .btn {
       padding: $spacing-sm $spacing-lg;
+      
+      @media (max-width: $mobile) {
+        padding: $spacing-md; // ⬅️ Más padding vertical en móvil
+      }
     }
   }
 }

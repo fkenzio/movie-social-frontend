@@ -18,8 +18,12 @@
   cursor: pointer;
   transition: transform 0.2s ease;
   
-  &:hover:not(.readonly) {
+  &:not(.readonly):hover {
     transform: scale(1.15);
+  }
+  
+  &.readonly {
+    cursor: default;
   }
   
   svg {
@@ -38,39 +42,6 @@
   .star-fill {
     z-index: 2;
     transition: opacity 0.2s ease;
-  }
-}
-
-.click-area {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  z-index: 3;
-  
-  &.click-left {
-    left: 0;
-  }
-  
-  &.click-right {
-    right: 0;
-  }
-}
-
-.readonly {
-  cursor: default;
-  
-  .star {
-    cursor: default;
-    
-    &:hover {
-      transform: none;
-    }
-  }
-  
-  .click-area {
-    cursor: default;
-    pointer-events: none;
   }
 }
 

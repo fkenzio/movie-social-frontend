@@ -1,1 +1,140 @@
-<p>global-ranking works!</p>
+<app-navbar></app-navbar>
+
+<div class="rankings-container">
+  <!-- Header -->
+  <div class="rankings-header">
+    <h1>🏆 Rankings Globales</h1>
+    <p>Descubre las películas mejor calificadas</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="rankings-tabs">
+    <button 
+      class="tab-btn" 
+      [class.active]="selectedTab === 'combined'"
+      (click)="changeTab('combined')"
+    >
+      👥 Cineminha
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="selectedTab === 'tmdb'"
+      (click)="changeTab('tmdb')"
+    >
+      🎬 TMDB
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="selectedTab === 'trending'"
+      (click)="changeTab('trending')"
+    >
+      🔥 Tendencias
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando rankings...</p>
+  </div>
+
+  <!-- Rankings List -->
+  <div *ngIf="!isLoading" class="rankings-list">
+    <div *ngFor="let movie of rankings" class="ranking-card">
+      <!-- Rank Number -->
+      <div class="rank-badge" [class.top-three]="movie.rank <= 3">
+        <span class="medal" *ngIf="movie.rank <= 3">{{ getMedalEmoji(movie.rank) }}</span>
+        <span class="rank-number" *ngIf="movie.rank > 3">#{{ movie.rank }}</span>
+      </div>
+
+      <!-- Movie Poster -->
+      <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+        <img 
+          *ngIf="movie.poster_path" 
+          [src]="getImageUrl(movie.poster_path)" 
+          [alt]="movie.title"
+        />
+        <div *ngIf="!movie.poster_path" class="no-poster">🎬</div>
+      </div>
+
+      <!-- Movie Info -->
+      <div class="movie-info">
+        <h3 [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+          {{ movie.title }}
+        </h3>
+        
+        <p class="release-year" *ngIf="movie.release_date">
+          {{ movie.release_date.substring(0, 4) }}
+        </p>
+
+        <p class="overview" *ngIf="movie.overview">
+          {{ movie.overview }}
+        </p>
+
+        <!-- Ratings -->
+        <div class="ratings-container">
+          <!-- TMDB Rating -->
+          <div class="rating-item" *ngIf="movie.tmdb_rating !== undefined">
+            <span class="rating-label">TMDB</span>
+            <div class="rating-value" [style.color]="getRatingColor(movie.tmdb_rating)">
+              ⭐ {{ movie.tmdb_rating.toFixed(1) }}
+              <span class="votes" *ngIf="movie.tmdb_votes">({{ movie.tmdb_votes | number }})</span>
+            </div>
+          </div>
+
+          <!-- Users Rating -->
+          <div class="rating-item" *ngIf="movie.users_average !== undefined">
+            <span class="rating-label">Cineminha</span>
+            <div class="rating-value" [style.color]="getRatingColor(movie.users_average)">
+              ⭐ {{ movie.users_average.toFixed(1) }}
+              <span class="votes" *ngIf="movie.total_ratings">({{ movie.total_ratings }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button 
+        class="btn-view"
+        [routerLink]="['/movies/detail', movie.movie_tmdb_id]"
+      >
+        Ver Detalles
+      </button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && rankings.length === 0" class="empty-state">
+    <div class="empty-icon">📊</div>
+    <h2>No hay rankings disponibles</h2>
+    <p>No se encontraron películas con suficientes calificaciones</p>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && rankings.length > 0 && totalPages > 1" class="pagination">
+    <button 
+      class="page-btn"
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      ← Anterior
+    </button>
+
+    <button
+      *ngFor="let page of getPages()"
+      class="page-btn"
+      [class.active]="page === currentPage"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
+
+    <button 
+      class="page-btn"
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      Siguiente →
+    </button>
+  </div>
+</div>

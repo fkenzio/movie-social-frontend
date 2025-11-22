@@ -33,16 +33,31 @@ export class RatingStarsComponent {
     return stars;
   }
 
-  onStarClick(index: number, isHalf: boolean): void {
+  onStarClick(index: number, event: MouseEvent): void {
     if (this.readonly) return;
+    
+    event.stopPropagation();
+    
+    // Calcular si es mitad izquierda o derecha
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const isHalf = x < rect.width / 2;
     
     const newRating = isHalf ? index + 0.5 : index + 1;
     this.rating = newRating;
     this.ratingChange.emit(newRating);
   }
 
-  onStarHover(index: number, isHalf: boolean): void {
+  onStarHover(index: number, event: MouseEvent): void {
     if (this.readonly) return;
+    
+    event.stopPropagation();
+    
+    // Calcular si es mitad izquierda o derecha
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const isHalf = x < rect.width / 2;
+    
     this.hoveredRating = isHalf ? index + 0.5 : index + 1;
   }
 

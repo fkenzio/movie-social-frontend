@@ -54,6 +54,12 @@ export const routes: Routes = [
     ]
   },
   {
+  path: 'rankings',
+  canActivate: [authGuard],
+  loadComponent: () => import('./features/rankings/pages/global-ranking/global-ranking')
+    .then(m => m.GlobalRankingComponent)
+  },
+  {
     path: '**',
     redirectTo: '/feed'
   }

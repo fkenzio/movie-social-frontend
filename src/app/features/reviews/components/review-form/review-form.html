@@ -1,1 +1,87 @@
-<p>review-form works!</p>
+<div class="review-form-container">
+  <div class="form-header">
+    <h3>{{ isEditMode ? 'Editar Reseña' : 'Escribir Reseña' }}</h3>
+    <p class="movie-title">{{ movieTitle }}</p>
+  </div>
+
+  <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="review-form">
+    
+    <!-- Título (opcional) -->
+    <div class="form-group">
+      <label for="title">Título (opcional)</label>
+      <input 
+        id="title"
+        type="text"
+        formControlName="title"
+        placeholder="Ej: Una obra maestra del cine"
+        maxlength="200"
+      />
+      <div class="error-message" *ngIf="title?.invalid && title?.touched">
+        <span *ngIf="title?.errors?.['maxlength']">Máximo 200 caracteres</span>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="form-group">
+      <label for="content">
+        Tu Reseña *
+        <span class="char-count" [class.limit]="getCharCount() > 4500">
+          {{ getCharCount() }} / 5000
+        </span>
+      </label>
+      <textarea 
+        id="content"
+        formControlName="content"
+        placeholder="Escribe tu opinión sobre la película..."
+        rows="8"
+        maxlength="5000"
+      ></textarea>
+      <div class="error-message" *ngIf="content?.invalid && content?.touched">
+        <span *ngIf="content?.errors?.['required']">La reseña es requerida</span>
+        <span *ngIf="content?.errors?.['minlength']">Mínimo 10 caracteres</span>
+        <span *ngIf="content?.errors?.['maxlength']">Máximo 5000 caracteres</span>
+      </div>
+    </div>
+
+    <!-- Spoiler Warning -->
+    <div class="form-group checkbox-group">
+      <label class="checkbox-label">
+        <input 
+          type="checkbox"
+          formControlName="contains_spoilers"
+        />
+        <span class="checkbox-custom"></span>
+        <span class="checkbox-text">
+          ⚠️ Esta reseña contiene spoilers
+        </span>
+      </label>
+      <p class="help-text">
+        Marca esta opción si revelas detalles importantes de la trama
+      </p>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        [disabled]="isSubmitting"
+      >
+        Cancelar
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="isSubmitting || reviewForm.invalid"
+      >
+        <span *ngIf="!isSubmitting">
+          {{ isEditMode ? 'Actualizar Reseña' : 'Publicar Reseña' }}
+        </span>
+        <span *ngIf="isSubmitting">
+          {{ isEditMode ? 'Actualizando...' : 'Publicando...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

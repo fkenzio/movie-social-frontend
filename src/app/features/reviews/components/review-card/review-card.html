@@ -1,1 +1,71 @@
-<p>review-card works!</p>
+<div class="review-card">
+  <!-- Header -->
+  <div class="review-header">
+    <div class="user-info">
+      <div class="user-avatar">
+        {{ review.user?.username?.charAt(0)?.toUpperCase() || 'U' }}
+      </div>
+      <div class="user-details">
+        <span class="username">{{ review.user?.username || 'Usuario' }}</span>
+        <span class="time">{{ getTimeAgo() }}</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="review-actions" *ngIf="isOwner">
+      <button class="btn-icon" (click)="onEdit()" title="Editar">
+        ✏️
+      </button>
+      <button 
+        class="btn-icon delete" 
+        (click)="onDelete()" 
+        [disabled]="isDeleting"
+        title="Eliminar"
+      >
+        {{ isDeleting ? '⏳' : '🗑️' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <h3 class="review-title" *ngIf="review.title">{{ review.title }}</h3>
+
+  <!-- Spoiler Warning -->
+  <div 
+    *ngIf="review.contains_spoilers && !showSpoiler" 
+    class="spoiler-warning"
+  >
+    <div class="warning-content">
+      <span class="warning-icon">⚠️</span>
+      <div class="warning-text">
+        <strong>Advertencia de Spoilers</strong>
+        <p>Esta reseña contiene información que puede revelar detalles importantes de la trama</p>
+      </div>
+    </div>
+    <button class="btn btn-spoiler" (click)="toggleSpoiler()">
+      Mostrar Reseña
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div 
+    class="review-content" 
+    [class.hidden]="review.contains_spoilers && !showSpoiler"
+    *ngIf="!review.contains_spoilers || showSpoiler"
+  >
+    <p [innerHTML]="contentPreview"></p>
+    
+    <button 
+      *ngIf="needsReadMore" 
+      class="btn-read-more"
+      (click)="toggleFullContent()"
+    >
+      {{ showFullContent ? 'Leer menos' : 'Leer más' }}
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="review-footer" *ngIf="review.updated_at !== review.created_at">
+    <span class="edited-tag">Editada</span>
+  </div>
+</div>

@@ -6,13 +6,24 @@ import { NavbarComponent } from '@shared/components/navbar/navbar';
 import { RatingStarsComponent } from '@shared/components/rating-stars/rating-stars';
 import { MovieApiService, MovieDetail } from '../../services/movie-api';
 import { RatingService, MovieRatingStats } from '../../services/rating';
+import { ReviewsService, Review } from '@features/reviews/services/reviews';
+import { ReviewFormComponent } from '@features/reviews/components/review-form/review-form';
+import { ReviewCardComponent } from '@features/reviews/components/review-card/review-card';
 import { ToastrService } from 'ngx-toastr';
 import { AddToListModalComponent } from '@shared/components/add-to-list-modal/add-to-list-modal';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterLink, RatingStarsComponent, AddToListModalComponent],
+  imports: [
+    CommonModule, 
+    NavbarComponent, 
+    RouterLink, 
+    RatingStarsComponent, 
+    AddToListModalComponent,
+    ReviewFormComponent,
+    ReviewCardComponent
+  ],
   templateUrl: './detail.html',
   styleUrls: ['./detail.scss']
 })
@@ -20,6 +31,7 @@ export class DetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private movieApi = inject(MovieApiService);
   private ratingService = inject(RatingService);
+  private reviewsService = inject(ReviewsService);
   private sanitizer = inject(DomSanitizer);
   private toastr = inject(ToastrService);
 
@@ -34,6 +46,17 @@ export class DetailComponent implements OnInit {
   showRatingModal = false;
   tempRating: number = 0;
   isSavingRating = false;
+
+  // Add to list
+  showAddToListModal = false;
+  
+  // Reviews state
+  reviews: Review[] = [];
+  userReview: Review | null = null;
+  showReviewForm = false;
+  isEditingReview = false;
+  loadingReviews = false;
+  reviewToEdit: Review | null = null;
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -53,6 +76,8 @@ export class DetailComponent implements OnInit {
         this.loadTrailer();
         this.loadUserRating();
         this.loadMovieStats();
+        this.loadReviews();
+        this.loadUserReview();
       },
       error: (error) => {
         console.error('Error loading movie:', error);
@@ -116,7 +141,7 @@ export class DetailComponent implements OnInit {
         this.isSavingRating = false;
         this.closeRatingModal();
         this.toastr.success('Calificación guardada', 'Éxito');
-        this.loadMovieStats(); // Recargar estadísticas
+        this.loadMovieStats();
       },
       error: (error) => {
         this.isSavingRating = false;
@@ -189,13 +214,11 @@ export class DetailComponent implements OnInit {
     return this.movie?.similar?.results?.slice(0, 6) || [];
   }
 
-  // Convertir TMDB rating (0-10) a escala 1-5
   getTmdbRating(): number {
     if (!this.movie) return 0;
     return this.movie.vote_average / 2;
   }
 
-  showAddToListModal = false;
   openAddToListModal(): void {
     this.showAddToListModal = true;
   }
@@ -204,4 +227,65 @@ export class DetailComponent implements OnInit {
     this.showAddToListModal = false;
   }
 
+  // ==================== REVIEWS ====================
+  
+  loadReviews(): void {
+    if (!this.movie) return;
+    
+    this.loadingReviews = true;
+    this.reviewsService.getMovieReviews(this.movie.id, 0, 10, true).subscribe({
+      next: (reviews) => {
+        this.reviews = reviews;
+        this.loadingReviews = false;
+      },
+      error: (error) => {
+        console.error('Error loading reviews:', error);
+        this.loadingReviews = false;
+      }
+    });
+  }
+
+  loadUserReview(): void {
+    if (!this.movie) return;
+    
+    this.reviewsService.getUserReviewForMovie(this.movie.id).subscribe({
+      next: (review) => {
+        this.userReview = review;
+      },
+      error: (error) => {
+        console.error('Error loading user review:', error);
+      }
+    });
+  }
+
+  openReviewForm(): void {
+    this.showReviewForm = true;
+    this.isEditingReview = false;
+    this.reviewToEdit = null;
+  }
+
+  openEditReviewForm(review: Review): void {
+    this.showReviewForm = true;
+    this.isEditingReview = true;
+    this.reviewToEdit = review;
+  }
+
+  closeReviewForm(): void {
+    this.showReviewForm = false;
+    this.isEditingReview = false;
+    this.reviewToEdit = null;
+  }
+
+  onReviewSaved(review: Review): void {
+    this.closeReviewForm();
+    this.loadReviews();
+    this.loadUserReview();
+  }
+
+  onReviewDeleted(reviewId: number): void {
+    this.reviews = this.reviews.filter(r => r.id !== reviewId);
+    if (this.userReview?.id === reviewId) {
+      this.userReview = null;
+    }
+  }
 }

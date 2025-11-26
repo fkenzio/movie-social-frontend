@@ -38,15 +38,19 @@
         </div>
 
         <div class="action-buttons">
-        <button class="btn btn-primary" (click)="openRatingModal()">
+          <button class="btn btn-primary" (click)="openRatingModal()">
             ⭐ {{ userRating > 0 ? 'Editar Calificación' : 'Calificar' }}
-        </button>
-          <button class="btn btn-secondary">
-            📝 Reseñar
+          </button>
+          <button 
+            class="btn btn-secondary"
+            (click)="userReview ? openEditReviewForm(userReview) : openReviewForm()"
+          >
+            📝 {{ userReview ? 'Editar Reseña' : 'Reseñar' }}
           </button>
           <button class="btn btn-secondary" (click)="openAddToListModal()">
             ➕ Agregar a Lista
           </button>
+          
           <!-- Add to List Modal -->
           <app-add-to-list-modal
             *ngIf="showAddToListModal && movie"
@@ -54,10 +58,12 @@
             [movieTitle]="movie.title"
             (close)="closeAddToListModal()"
           ></app-add-to-list-modal>
+          
           <button *ngIf="trailerUrl" class="btn btn-secondary" (click)="toggleTrailer()">
             🎬 Ver Trailer
           </button>
         </div>
+
         <!-- Rating Stats Section -->
         <div class="rating-stats" *ngIf="movieStats">
           <div class="stat-card">
@@ -189,6 +195,71 @@
             <span class="similar-rating">⭐ {{ similar.vote_average.toFixed(1) }}</span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="section reviews-section">
+      <div class="section-header">
+        <h2>Reseñas de Usuarios</h2>
+        <button 
+          *ngIf="!userReview && !showReviewForm" 
+          class="btn btn-primary"
+          (click)="openReviewForm()"
+        >
+          ✍️ Escribir Reseña
+        </button>
+      </div>
+
+      <!-- Review Form Modal -->
+      <div *ngIf="showReviewForm" class="review-form-modal">
+        <div class="modal-overlay" (click)="closeReviewForm()"></div>
+        <div class="modal-content">
+          <button class="close-modal-btn" (click)="closeReviewForm()">✕</button>
+          <app-review-form
+            [movieId]="movie.id"
+            [movieTitle]="movie.title"
+            [existingReview]="reviewToEdit || undefined"
+            (reviewSaved)="onReviewSaved($event)"
+            (cancel)="closeReviewForm()"
+          ></app-review-form>
+        </div>
+      </div>
+
+      <!-- User's Review -->
+      <div *ngIf="userReview && !showReviewForm" class="user-review-section">
+        <h3>Tu Reseña</h3>
+        <app-review-card
+          [review]="userReview"
+          (reviewDeleted)="onReviewDeleted($event)"
+          (reviewEdit)="openEditReviewForm($event)"
+        ></app-review-card>
+      </div>
+
+      <!-- Other Reviews -->
+      <div class="reviews-list">
+        <h3 *ngIf="reviews.length > 0">Reseñas de la Comunidad</h3>
+        
+        <div *ngIf="loadingReviews" class="loading-reviews">
+          <div class="spinner"></div>
+          <p>Cargando reseñas...</p>
+        </div>
+
+        <div *ngIf="!loadingReviews && reviews.length === 0" class="no-reviews">
+          <span class="icon">📝</span>
+          <h3>No hay reseñas todavía</h3>
+          <p>Sé el primero en reseñar esta película</p>
+          <button class="btn btn-primary" (click)="openReviewForm()">
+            Escribir Primera Reseña
+          </button>
+        </div>
+
+        <app-review-card
+          *ngFor="let review of reviews"
+          [review]="review"
+          (reviewDeleted)="onReviewDeleted($event)"
+          (reviewEdit)="openEditReviewForm($event)"
+        ></app-review-card>
       </div>
     </section>
 

@@ -1,7 +1,6 @@
 @import '../../../../../styles/variables';
 @import '../../../../../styles/mixins';
 
-
 .loading-container {
   min-height: calc(100vh - 60px);
   @include flex-center;
@@ -414,7 +413,7 @@
   position: relative;
   
   @media (max-width: $mobile) {
-    padding: $spacing-lg; // ⬅️ Menos padding en móvil
+    padding: $spacing-lg;
   }
   
   .close-btn {
@@ -443,7 +442,7 @@
     font-size: 1.8rem;
     
     @media (max-width: $mobile) {
-      font-size: 1.5rem; // ⬅️ Título más pequeño en móvil
+      font-size: 1.5rem;
     }
   }
   
@@ -456,7 +455,7 @@
     white-space: nowrap;
     
     @media (max-width: $mobile) {
-      font-size: 1rem; // ⬅️ Más pequeño en móvil
+      font-size: 1rem;
       margin-bottom: $spacing-lg;
     }
   }
@@ -470,16 +469,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 120px; // ⬅️ Altura mínima para evitar saltos
+    min-height: 120px;
     
     @media (max-width: $mobile) {
-      padding: $spacing-lg 0; // ⬅️ Menos padding en móvil
+      padding: $spacing-lg 0;
       margin-bottom: $spacing-lg;
       min-height: 100px;
     }
     
     app-rating-stars {
-      display: inline-block; // ⬅️ Importante para centrar
+      display: inline-block;
     }
   }
   
@@ -489,7 +488,7 @@
     justify-content: flex-end;
     
     @media (max-width: $mobile) {
-      flex-direction: column; // ⬅️ Botones en columna en móvil
+      flex-direction: column;
       
       .btn {
         width: 100%;
@@ -500,8 +499,143 @@
       padding: $spacing-sm $spacing-lg;
       
       @media (max-width: $mobile) {
-        padding: $spacing-md; // ⬅️ Más padding vertical en móvil
+        padding: $spacing-md;
       }
     }
+  }
+}
+
+// ==================== REVIEWS SECTION ====================
+
+.reviews-section {
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-xl;
+    
+    @media (max-width: $mobile) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-md;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.review-form-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  @include flex-center;
+  padding: $spacing-lg;
+  
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .modal-content {
+    position: relative;
+    background: $darker-bg;
+    border-radius: $border-radius-lg;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 3001;
+    
+    @media (max-width: $mobile) {
+      max-height: 95vh;
+    }
+  }
+  
+  .close-modal-btn {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+    background: transparent;
+    border: none;
+    color: $light-text;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 3002;
+    
+    &:hover {
+      background: rgba($primary-color, 0.2);
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.user-review-section {
+  margin-bottom: $spacing-xl * 1.5;
+  
+  h3 {
+    font-size: 1.5rem;
+    color: $light-text;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-sm;
+    border-bottom: 2px solid $primary-color;
+  }
+}
+
+.reviews-list {
+  h3 {
+    font-size: 1.3rem;
+    color: $light-text;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.loading-reviews {
+  text-align: center;
+  padding: $spacing-xl * 2;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid $secondary-color;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto $spacing-md;
+  }
+  
+  p {
+    color: $gray-text;
+  }
+}
+
+.no-reviews {
+  text-align: center;
+  padding: $spacing-xl * 2;
+  background: rgba($secondary-color, 0.5);
+  border-radius: $border-radius-lg;
+  
+  .icon {
+    font-size: 80px;
+    display: block;
+    margin-bottom: $spacing-lg;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    color: $light-text;
+    margin: 0 0 $spacing-sm 0;
+    font-size: 1.5rem;
+  }
+  
+  p {
+    color: $gray-text;
+    margin-bottom: $spacing-xl;
   }
 }

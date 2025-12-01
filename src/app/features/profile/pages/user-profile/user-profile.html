@@ -1,1 +1,149 @@
-<p>user-profile works!</p>
+<app-navbar></app-navbar>
+
+<div class="profile-container">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando perfil...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="!isLoading && profile" class="profile-content">
+    
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-info">
+        <div class="user-avatar-large">
+          {{ getUserInitials() }}
+        </div>
+        
+        <div class="user-details">
+          <h1>{{ profile.username }}</h1>
+          <p class="full-name" *ngIf="profile.full_name">{{ profile.full_name }}</p>
+          <p class="member-since">Miembro desde {{ getMemberSince() }}</p>
+          <p class="bio" *ngIf="profile.bio">{{ profile.bio }}</p>
+          
+          <button 
+            *ngIf="isOwnProfile" 
+            class="btn btn-primary"
+            (click)="editProfile()"
+          >
+            ✏️ Editar Perfil
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-section">
+      <h2>📊 Estadísticas</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card highlight">
+          <div class="stat-icon">🎬</div>
+          <div class="stat-content">
+            <h3>{{ profile.stats.movies_watched }}</h3>
+            <p>Películas Vistas</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-content">
+            <h3>{{ profile.stats.total_ratings }}</h3>
+            <p>Calificaciones</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-content">
+            <h3>{{ profile.stats.total_reviews }}</h3>
+            <p>Reseñas</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📋</div>
+          <div class="stat-content">
+            <h3>{{ profile.stats.total_lists }}</h3>
+            <p>Listas</p>
+          </div>
+        </div>
+
+        <div class="stat-card accent">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-content">
+            <h3>{{ profile.stats.average_rating.toFixed(1) }}</h3>
+            <p>Promedio de Calificación</p>
+          </div>
+        </div>
+
+        <div class="stat-card" *ngIf="profile.stats.favorite_genre">
+          <div class="stat-icon">🎭</div>
+          <div class="stat-content">
+            <h3>{{ profile.stats.favorite_genre }}</h3>
+            <p>Género Favorito</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="activity-section">
+      <h2>📅 Actividad Reciente</h2>
+      
+      <div *ngIf="profile.recent_activity.length === 0" class="empty-state">
+        <div class="empty-icon">📭</div>
+        <h3>Sin actividad reciente</h3>
+        <p>{{ isOwnProfile ? 'Empieza a calificar y reseñar películas' : 'Este usuario aún no tiene actividad' }}</p>
+      </div>
+
+      <div class="activity-timeline">
+        <div 
+          *ngFor="let activity of profile.recent_activity" 
+          class="activity-item"
+        >
+          <div class="activity-icon">
+            {{ getActivityIcon(activity.activity_type) }}
+          </div>
+
+          <div class="activity-content">
+            <div class="activity-header">
+              <span class="activity-text">{{ getActivityText(activity) }}</span>
+              <span class="activity-time">{{ getTimeAgo(activity.created_at) }}</span>
+            </div>
+
+            <!-- Movie Info -->
+            <div 
+              *ngIf="activity.movie_tmdb_id && activity.movie_title" 
+              class="movie-info"
+              [routerLink]="['/movies/detail', activity.movie_tmdb_id]"
+            >
+              <img 
+                *ngIf="activity.movie_poster"
+                [src]="getImageUrl(activity.movie_poster)" 
+                [alt]="activity.movie_title"
+                class="movie-thumb"
+              />
+              <div class="movie-details">
+                <h4>{{ activity.movie_title }}</h4>
+                <p *ngIf="activity.content" class="review-preview">
+                  {{ activity.content }}
+                </p>
+              </div>
+            </div>
+
+            <!-- List Info -->
+            <div *ngIf="activity.activity_type === 'list_created'" class="list-info">
+              <div class="list-badge">
+                📋 {{ activity.list_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -59,6 +59,24 @@ export const routes: Routes = [
   loadComponent: () => import('./features/rankings/pages/global-ranking/global-ranking')
     .then(m => m.GlobalRankingComponent)
   },
+
+  {
+  path: 'profile',
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () => import('./features/profile/pages/user-profile/user-profile')
+        .then(m => m.UserProfileComponent)
+    },
+    {
+      path: ':id',
+      loadComponent: () => import('./features/profile/pages/user-profile/user-profile')
+        .then(m => m.UserProfileComponent)
+    }
+  ]
+  },
+
   {
     path: '**',
     redirectTo: '/feed'

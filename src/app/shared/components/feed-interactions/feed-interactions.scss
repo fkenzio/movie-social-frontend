@@ -1,0 +1,439 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.feed-interactions {
+  border-top: 1px solid $dark-bg;
+  padding-top: $spacing-md;
+}
+
+// ==================== INTERACTION BUTTONS ====================
+
+.interaction-buttons {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  
+  @media (max-width: $mobile) {
+    gap: $spacing-xs;
+  }
+}
+
+.btn-interaction {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-md;
+  background: $dark-bg;
+  border: 2px solid transparent;
+  border-radius: $border-radius-lg;
+  color: $light-text;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  @media (max-width: $mobile) {
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.9rem;
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+  }
+  
+  .count,
+  .label {
+    font-size: 0.95rem;
+  }
+  
+  &:hover {
+    background: lighten($dark-bg, 5%);
+    transform: translateY(-2px);
+  }
+  
+  &.active {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.1);
+    
+    .icon {
+      animation: pulse 0.3s ease;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+// ==================== COMMENTS SECTION ====================
+
+.comments-section {
+  margin-top: $spacing-lg;
+  padding: $spacing-lg;
+  background: rgba($dark-bg, 0.5);
+  border-radius: $border-radius-md;
+  
+  @media (max-width: $mobile) {
+    padding: $spacing-md;
+  }
+}
+
+// ==================== COMMENT FORM ====================
+
+.comment-form-container {
+  margin-bottom: $spacing-lg;
+}
+
+.btn-add-comment {
+  width: 100%;
+  padding: $spacing-md;
+  background: $dark-bg;
+  border: 2px dashed $gray-text;
+  border-radius: $border-radius-md;
+  color: $gray-text;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    background: rgba($primary-color, 0.05);
+  }
+}
+
+.comment-form,
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  
+  textarea {
+    width: 100%;
+    padding: $spacing-md;
+    background: $secondary-color;
+    border: 2px solid transparent;
+    border-radius: $border-radius-md;
+    color: $light-text;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: vertical;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+    
+    &::placeholder {
+      color: $gray-text;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: flex-end;
+    
+    @media (max-width: $mobile) {
+      flex-direction: column-reverse;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.reply-form {
+  margin-top: $spacing-md;
+  margin-left: $spacing-xl;
+  padding: $spacing-md;
+  background: rgba($secondary-color, 0.5);
+  border-radius: $border-radius-md;
+  border-left: 3px solid $primary-color;
+  
+  @media (max-width: $mobile) {
+    margin-left: $spacing-md;
+  }
+}
+
+// ==================== COMMENTS LIST ====================
+
+.loading-comments {
+  text-align: center;
+  padding: $spacing-xl;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid $secondary-color;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto $spacing-md;
+  }
+  
+  p {
+    color: $gray-text;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-comments {
+  text-align: center;
+  padding: $spacing-xl * 2;
+  
+  .empty-icon {
+    font-size: 60px;
+    display: block;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+  }
+  
+  p {
+    color: $light-text;
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .subtitle {
+    color: $gray-text;
+    font-size: 0.9rem;
+    margin-top: $spacing-xs;
+  }
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+// ==================== COMMENT ITEM ====================
+
+.comment-item {
+  background: $secondary-color;
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  transition: all 0.3s ease;
+  
+  @media (max-width: $mobile) {
+    padding: $spacing-sm;
+  }
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+  color: $light-text;
+  @include flex-center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  
+  &.small {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: $mobile) {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  
+  .username {
+    font-weight: 600;
+    color: $light-text;
+    font-size: 0.95rem;
+  }
+  
+  .time {
+    font-size: 0.8rem;
+    color: $gray-text;
+  }
+}
+
+.comment-actions {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: $spacing-xs;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
+  
+  &.delete:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.comment-content {
+  margin-bottom: $spacing-sm;
+  
+  p {
+    color: $light-text;
+    line-height: 1.6;
+    margin: 0;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+}
+
+.comment-footer {
+  display: flex;
+  gap: $spacing-md;
+  padding-top: $spacing-sm;
+  border-top: 1px solid rgba($dark-bg, 0.5);
+  
+  @media (max-width: $mobile) {
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+}
+
+.btn-comment-action {
+  background: none;
+  border: none;
+  color: $gray-text;
+  font-weight: 600;
+  cursor: pointer;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.9rem;
+  
+  @media (max-width: $mobile) {
+    padding: $spacing-xs;
+    font-size: 0.85rem;
+  }
+  
+  &:hover {
+    background: rgba($light-text, 0.05);
+    color: $light-text;
+  }
+  
+  &.active {
+    color: $primary-color;
+  }
+}
+
+// ==================== REPLIES ====================
+
+.replies-list {
+  margin-top: $spacing-md;
+  margin-left: $spacing-xl;
+  padding-left: $spacing-md;
+  border-left: 2px solid rgba($primary-color, 0.3);
+  
+  @media (max-width: $mobile) {
+    margin-left: $spacing-md;
+  }
+}
+
+.reply-item {
+  background: rgba($dark-bg, 0.3);
+  border-radius: $border-radius-sm;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  
+  @media (max-width: $mobile) {
+    padding: $spacing-sm;
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// ==================== BUTTONS ====================
+
+.btn {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 0.95rem;
+  
+  &.btn-primary {
+    background: $primary-color;
+    color: $light-text;
+    
+    &:hover:not(:disabled) {
+      background: darken($primary-color, 10%);
+      transform: translateY(-2px);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  &.btn-secondary {
+    background: $dark-bg;
+    color: $light-text;
+    
+    &:hover:not(:disabled) {
+      background: lighten($dark-bg, 10%);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  &.btn-sm {
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.85rem;
+  }
+}

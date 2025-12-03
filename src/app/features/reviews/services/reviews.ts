@@ -12,6 +12,11 @@ export interface Review {
   content: string;
   contains_spoilers: boolean;
   created_at: string;
+  movie?: {
+    id: number;
+    title: string;
+    poster_path?: string;
+  };
   updated_at: string;
   user?: User;
 }

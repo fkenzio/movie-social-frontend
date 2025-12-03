@@ -1,0 +1,230 @@
+<div class="feed-interactions">
+  
+  <!-- Action Buttons -->
+  <div class="interaction-buttons">
+    <!-- Like Button -->
+    <button 
+      class="btn-interaction" 
+      [class.active]="stats?.user_has_liked"
+      (click)="toggleLike()"
+    >
+      <span class="icon">{{ stats?.user_has_liked ? '❤️' : '🤍' }}</span>
+      <span class="count">{{ stats?.likes_count || 0 }}</span>
+    </button>
+
+    <!-- Comment Button -->
+    <button 
+      class="btn-interaction"
+      [class.active]="showComments"
+      (click)="toggleComments()"
+    >
+      <span class="icon">💬</span>
+      <span class="count">{{ stats?.comments_count || 0 }}</span>
+    </button>
+
+    <!-- Share Button -->
+    <button 
+      class="btn-interaction"
+      (click)="sharePost()"
+      title="Compartir"
+    >
+      <span class="icon">🔗</span>
+      <span class="label">Compartir</span>
+    </button>
+  </div>
+
+  <!-- Comments Section -->
+  <div *ngIf="showComments" class="comments-section">
+    
+    <!-- Comment Form -->
+    <div class="comment-form-container">
+      <button 
+        *ngIf="!showCommentForm"
+        class="btn-add-comment"
+        (click)="toggleCommentForm()"
+      >
+        ✍️ Agregar comentario
+      </button>
+
+      <div *ngIf="showCommentForm" class="comment-form">
+        <textarea
+          [(ngModel)]="newCommentContent"
+          placeholder="Escribe tu comentario..."
+          rows="3"
+          maxlength="1000"
+          [disabled]="isSubmitting"
+        ></textarea>
+        
+        <div class="form-actions">
+          <button 
+            class="btn btn-secondary"
+            (click)="toggleCommentForm()"
+            [disabled]="isSubmitting"
+          >
+            Cancelar
+          </button>
+          <button 
+            class="btn btn-primary"
+            (click)="submitComment()"
+            [disabled]="isSubmitting || !newCommentContent.trim()"
+          >
+            {{ isSubmitting ? 'Publicando...' : 'Publicar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Comments -->
+    <div *ngIf="isLoadingComments" class="loading-comments">
+      <div class="spinner"></div>
+      <p>Cargando comentarios...</p>
+    </div>
+
+    <!-- Comments List -->
+    <div *ngIf="!isLoadingComments" class="comments-list">
+      
+      <!-- Empty State -->
+      <div *ngIf="comments.length === 0" class="empty-comments">
+        <span class="empty-icon">💬</span>
+        <p>No hay comentarios todavía</p>
+        <p class="subtitle">Sé el primero en comentar</p>
+      </div>
+
+      <!-- Comment Item -->
+      <div *ngFor="let comment of comments" class="comment-item">
+        
+        <!-- Comment Header -->
+        <div class="comment-header">
+          <div class="user-info">
+            <div class="user-avatar">
+              {{ getUserInitial(comment.user?.username) }}
+            </div>
+            <div class="user-details">
+              <span class="username">{{ comment.user?.username }}</span>
+              <span class="time">{{ getTimeAgo(comment.created_at) }}</span>
+            </div>
+          </div>
+
+          <!-- Comment Actions -->
+          <div class="comment-actions" *ngIf="isCommentOwner(comment)">
+            <button 
+              class="btn-icon delete"
+              (click)="deleteComment(comment)"
+              title="Eliminar"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <!-- Comment Content -->
+        <div class="comment-content">
+          <p>{{ comment.content }}</p>
+        </div>
+
+        <!-- Comment Footer -->
+        <div class="comment-footer">
+          <button 
+            class="btn-comment-action"
+            [class.active]="comment.user_has_liked"
+            (click)="toggleCommentLike(comment)"
+          >
+            <span>{{ comment.user_has_liked ? '❤️' : '🤍' }}</span>
+            <span *ngIf="comment.likes_count > 0">{{ comment.likes_count }}</span>
+          </button>
+
+          <button 
+            class="btn-comment-action"
+            (click)="startReply(comment.id)"
+          >
+            💬 Responder
+          </button>
+
+          <button 
+            *ngIf="comment.replies_count > 0"
+            class="btn-comment-action"
+            (click)="toggleReplies(comment)"
+          >
+            {{ expandedComments.has(comment.id) ? '▼' : '▶' }}
+            {{ comment.replies_count }} 
+            {{ comment.replies_count === 1 ? 'respuesta' : 'respuestas' }}
+          </button>
+        </div>
+
+        <!-- Reply Form -->
+        <div *ngIf="replyToCommentId === comment.id" class="reply-form">
+          <textarea
+            [(ngModel)]="replyContent"
+            placeholder="Escribe tu respuesta..."
+            rows="2"
+            maxlength="1000"
+            [disabled]="isSubmitting"
+          ></textarea>
+          
+          <div class="form-actions">
+            <button 
+              class="btn btn-secondary btn-sm"
+              (click)="cancelReply()"
+              [disabled]="isSubmitting"
+            >
+              Cancelar
+            </button>
+            <button 
+              class="btn btn-primary btn-sm"
+              (click)="submitReply(comment)"
+              [disabled]="isSubmitting || !replyContent.trim()"
+            >
+              {{ isSubmitting ? 'Publicando...' : 'Responder' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Replies -->
+        <div 
+          *ngIf="expandedComments.has(comment.id) && getReplies(comment).length > 0" 
+          class="replies-list"
+        >
+          <div *ngFor="let reply of getReplies(comment)" class="reply-item">
+            <div class="comment-header">
+              <div class="user-info">
+                <div class="user-avatar small">
+                  {{ getUserInitial(reply.user?.username) }}
+                </div>
+                <div class="user-details">
+                  <span class="username">{{ reply.user?.username }}</span>
+                  <span class="time">{{ getTimeAgo(reply.created_at) }}</span>
+                </div>
+              </div>
+
+              <div class="comment-actions" *ngIf="isCommentOwner(reply)">
+                <button 
+                  class="btn-icon delete"
+                  (click)="deleteComment(reply)"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+
+            <div class="comment-content">
+              <p>{{ reply.content }}</p>
+            </div>
+
+            <div class="comment-footer">
+              <button 
+                class="btn-comment-action"
+                [class.active]="reply.user_has_liked"
+                (click)="toggleCommentLike(reply)"
+              >
+                <span>{{ reply.user_has_liked ? '❤️' : '🤍' }}</span>
+                <span *ngIf="reply.likes_count > 0">{{ reply.likes_count }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

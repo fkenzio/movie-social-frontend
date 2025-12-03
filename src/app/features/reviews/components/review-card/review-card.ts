@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Review, ReviewsService } from '../../services/reviews';
 import { AuthService } from '@core/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { FeedInteractionsComponent } from '@shared/components/feed-interactions/feed-interactions';
 
 @Component({
   selector: 'app-review-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FeedInteractionsComponent],
   templateUrl: './review-card.html',
   styleUrls: ['./review-card.scss']
 })

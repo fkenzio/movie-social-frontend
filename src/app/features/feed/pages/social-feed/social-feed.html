@@ -1,217 +1,141 @@
 <app-navbar></app-navbar>
 
 <div class="feed-container">
-  
-  <!-- Hero Header -->
-  <div class="feed-hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1>
-          <span class="gradient-text">Descubre</span> lo que está viendo la comunidad
-        </h1>
-        <p>Únete a la conversación sobre cine</p>
-      </div>
-    </div>
+  <div class="feed-header">
+    <h1>Feed Social</h1>
+    <p>Bienvenido, <strong>{{ currentUser?.username }}</strong>! 🎉</p>
   </div>
 
   <!-- Loading -->
-  <div *ngIf="isLoading" class="loading-modern">
-    <div class="loading-spinner">
-      <div class="spinner-ring"></div>
-      <div class="spinner-ring"></div>
-      <div class="spinner-ring"></div>
-    </div>
-    <p class="loading-text">Cargando contenido increíble...</p>
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando feed...</p>
   </div>
 
-  <!-- Feed Grid -->
-  <div *ngIf="!isLoading" class="feed-grid">
+  <!-- Feed Content -->
+  <div *ngIf="!isLoading" class="feed-content">
     
-    <!-- Empty State Modern -->
-    <div *ngIf="feedItems.length === 0" class="empty-state-modern">
-      <div class="empty-animation">
-        <div class="empty-circle"></div>
-        <div class="empty-icon">🎭</div>
-      </div>
-      <h2>El feed está esperando por ti</h2>
-      <p>Sé el primero en compartir tu opinión sobre películas</p>
-      <button class="btn-cta" routerLink="/movies/search">
-        <span>Explorar Películas</span>
-        <span class="btn-arrow">→</span>
+    <!-- Empty State -->
+    <div *ngIf="feedItems.length === 0" class="empty-state">
+      <h2>No hay actividad todavía</h2>
+      <p>Empieza a calificar películas y seguir usuarios para ver contenido aquí</p>
+      <button class="btn btn-primary" routerLink="/movies/search">
+        Explorar Películas
       </button>
     </div>
 
     <!-- Feed Items -->
-    <article *ngFor="let item of feedItems; let i = index" 
-             class="feed-item"
-             [style.animation-delay.ms]="i * 50">
+    <div *ngFor="let item of feedItems" class="post-card">
       
-      <!-- Card Header -->
-      <header class="item-header">
-        <div class="user-info" [routerLink]="['/profile', item.user_id]">
-          <div class="avatar-wrapper">
-            <div class="user-avatar">
-              {{ getUserInitials(item.user.username) }}
-            </div>
-            <div class="avatar-ring"></div>
-          </div>
-          <div class="user-meta">
+      <!-- Post Header -->
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar">{{ getUserInitial(item.user.username) }}</div>
+          <div class="user-details">
             <span class="username">{{ item.user.username }}</span>
-            <div class="meta-details">
-              <span class="time">{{ getTimeAgo(item.created_at) }}</span>
-              <span class="separator">•</span>
-              <span class="activity-type">{{ getActivityBadge(item.activity_type) }}</span>
-            </div>
+            <span class="time">{{ getTimeAgo(item.created_at) }}</span>
           </div>
         </div>
-        <div class="activity-icon-badge">
-          {{ getActivityIcon(item.activity_type) }}
-        </div>
-      </header>
-
-      <!-- Card Body -->
-      <div class="item-body">
-        
-        <!-- Rating Activity -->
-        <div *ngIf="item.activity_type === 'rating'" class="activity-content rating-activity">
-          <div class="activity-title">
-            <span class="action-text">calificó</span>
-          </div>
-          
-          <div class="movie-showcase" [routerLink]="['/movies/detail', item.movie_tmdb_id]">
-            <div class="movie-backdrop" *ngIf="item.movie_backdrop">
-              <img [src]="getBackdropUrl(item.movie_backdrop)" [alt]="item.movie_title">
-              <div class="backdrop-overlay"></div>
-            </div>
-            
-            <div class="movie-content">
-              <div class="movie-poster-mini">
-                <img [src]="getImageUrl(item.movie_poster)" [alt]="item.movie_title">
-              </div>
-              <div class="movie-details">
-                <h3 class="movie-title">{{ item.movie_title }}</h3>
-                <div class="ratings-row">
-                  <div class="rating-badge user-rating">
-                    <span class="stars">⭐</span>
-                    <span class="value">{{ item.rating?.toFixed(1) }}</span>
-                  </div>
-                  <div class="rating-badge tmdb-rating" *ngIf="item.movie_rating_tmdb">
-                    <span class="label">TMDB</span>
-                    <span class="value">{{ item.movie_rating_tmdb.toFixed(1) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Review Activity -->
-        <div *ngIf="item.activity_type === 'review'" class="activity-content review-activity">
-          <div class="activity-title">
-            <span class="action-text">escribió una reseña</span>
-          </div>
-          
-          <div class="review-showcase" [routerLink]="['/movies/detail', item.movie_tmdb_id]">
-            <div class="review-header">
-              <div class="review-poster">
-                <img [src]="getImageUrl(item.movie_poster)" [alt]="item.movie_title">
-                <div class="review-badge">📝</div>
-              </div>
-              <div class="review-meta">
-                <h3 class="movie-title">{{ item.movie_title }}</h3>
-                <h4 class="review-title" *ngIf="item.review_title">{{ item.review_title }}</h4>
-              </div>
-            </div>
-            
-            <div class="review-body" *ngIf="!item.review_contains_spoilers">
-              <p class="review-preview">{{ item.review_content }}</p>
-              <div class="read-more">
-                Leer más <span class="arrow">→</span>
-              </div>
-            </div>
-            
-            <div class="spoiler-alert" *ngIf="item.review_contains_spoilers">
-              <span class="alert-icon">⚠️</span>
-              <span class="alert-text">Contiene spoilers</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- List Activity -->
-        <div *ngIf="item.activity_type === 'list_created'" class="activity-content list-activity">
-          <div class="activity-title">
-            <span class="action-text">creó una lista</span>
-          </div>
-          
-          <div class="list-showcase" [routerLink]="['/lists/detail', item.list_id]">
-            <div class="list-icon-large">📋</div>
-            <div class="list-details">
-              <h3 class="list-name">{{ item.list_name }}</h3>
-              <p class="list-description" *ngIf="item.list_description">
-                {{ item.list_description }}
-              </p>
-            </div>
-            <div class="list-action">
-              <span class="action-arrow">→</span>
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      <!-- Card Footer -->
-      <footer class="item-footer">
-        <button class="footer-action" 
-                [routerLink]="item.movie_tmdb_id ? ['/movies/detail', item.movie_tmdb_id] : ['/lists/detail', item.list_id]">
-          <span>Ver detalles</span>
-        </button>
-        <div class="footer-meta">
-          <button class="icon-btn">
-            <span class="icon">❤️</span>
-          </button>
-          <button class="icon-btn">
-            <span class="icon">💬</span>
-          </button>
-          <button class="icon-btn">
-            <span class="icon">🔗</span>
-          </button>
+      <!-- Rating Post -->
+      <div *ngIf="item.activity_type === 'rating'" class="post-body">
+        <div class="activity-header">
+          <span class="activity-icon">⭐</span>
+          <span class="activity-text">Calificó una película</span>
         </div>
-      </footer>
 
-    </article>
+        <div class="movie-card-inline" [routerLink]="['/movies/detail', item.movie_tmdb_id]">
+          <img 
+            *ngIf="item.movie_poster" 
+            [src]="getImageUrl(item.movie_poster)" 
+            [alt]="item.movie_title"
+            class="movie-thumb"
+          />
+          <div class="movie-info">
+            <h3>{{ item.movie_title }}</h3>
+            <div class="rating-display large">
+              ⭐ {{ item.rating?.toFixed(1) }}/5
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- Review Post -->
+      <div *ngIf="item.activity_type === 'review'" class="post-body">
+        <div class="activity-header">
+          <span class="activity-icon">📝</span>
+          <span class="activity-text">Escribió una reseña</span>
+        </div>
+
+        <div class="movie-card-inline" [routerLink]="['/movies/detail', item.movie_tmdb_id]">
+          <img 
+            *ngIf="item.movie_poster" 
+            [src]="getImageUrl(item.movie_poster)" 
+            [alt]="item.movie_title"
+            class="movie-thumb"
+          />
+          <div class="movie-info">
+            <h3>{{ item.movie_title }}</h3>
+            <h4 *ngIf="item.review_title" class="review-title">{{ item.review_title }}</h4>
+            <p class="review-preview">{{ item.review_content }}</p>
+            <span *ngIf="item.review_contains_spoilers" class="spoiler-badge">
+              ⚠️ Contiene Spoilers
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- List Post -->
+      <div *ngIf="item.activity_type === 'list_created'" class="post-body">
+        <div class="activity-header">
+          <span class="activity-icon">📋</span>
+          <span class="activity-text">Creó una lista</span>
+        </div>
+
+        <div class="list-card" [routerLink]="['/lists/detail', item.list_id]">
+          <h3>{{ item.list_name }}</h3>
+          <p *ngIf="item.list_description" class="list-description">
+            {{ item.list_description }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Interactions Component -->
+      <app-feed-interactions
+        [targetType]="item.activity_type === 'list_created' ? 'list' : item.activity_type"
+        [targetId]="item.target_id"
+        [movieTitle]="item.movie_title"
+      ></app-feed-interactions>
+
+    </div>
   </div>
 
-  <!-- Pagination Modern -->
-  <nav *ngIf="!isLoading && feedItems.length > 0 && totalPages > 1" class="pagination-modern">
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && feedItems.length > 0 && totalPages > 1" class="pagination">
     <button 
-      class="page-btn prev"
+      class="page-btn"
       [disabled]="currentPage === 1"
       (click)="changePage(currentPage - 1)"
     >
-      <span class="btn-icon">←</span>
-      <span class="btn-text">Anterior</span>
+      ← Anterior
     </button>
 
-    <div class="page-indicators">
-      <button
-        *ngFor="let page of getPages()"
-        class="page-indicator"
-        [class.active]="page === currentPage"
-        (click)="changePage(page)"
-      >
-        {{ page }}
-      </button>
-    </div>
+    <button
+      *ngFor="let page of getPages()"
+      class="page-btn"
+      [class.active]="page === currentPage"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
 
     <button 
-      class="page-btn next"
+      class="page-btn"
       [disabled]="currentPage === totalPages"
       (click)="changePage(currentPage + 1)"
     >
-      <span class="btn-text">Siguiente</span>
-      <span class="btn-icon">→</span>
+      Siguiente →
     </button>
-  </nav>
-
+  </div>
 </div>

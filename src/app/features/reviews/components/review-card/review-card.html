@@ -68,4 +68,11 @@
   <div class="review-footer" *ngIf="review.updated_at !== review.created_at">
     <span class="edited-tag">Editada</span>
   </div>
+
+  <!-- INTERACCIONES - Likes, Comentarios, Compartir -->
+  <app-feed-interactions
+    [targetType]="'review'"
+    [targetId]="review.id"
+    [movieTitle]="review.movie?.title"
+  ></app-feed-interactions>
 </div>

@@ -11,6 +11,7 @@ import { ReviewFormComponent } from '@features/reviews/components/review-form/re
 import { ReviewCardComponent } from '@features/reviews/components/review-card/review-card';
 import { ToastrService } from 'ngx-toastr';
 import { AddToListModalComponent } from '@shared/components/add-to-list-modal/add-to-list-modal';
+import { FeedInteractionsComponent } from '@shared/components/feed-interactions/feed-interactions';
 
 @Component({
   selector: 'app-detail',
@@ -22,7 +23,8 @@ import { AddToListModalComponent } from '@shared/components/add-to-list-modal/ad
     RatingStarsComponent, 
     AddToListModalComponent,
     ReviewFormComponent,
-    ReviewCardComponent
+    ReviewCardComponent,
+    FeedInteractionsComponent
   ],
   templateUrl: './detail.html',
   styleUrls: ['./detail.scss']
@@ -39,6 +41,8 @@ export class DetailComponent implements OnInit {
   isLoading = true;
   trailerUrl: SafeResourceUrl | null = null;
   showTrailer = false;
+
+  
   
   // Rating state
   userRating: number = 0;
@@ -86,12 +90,15 @@ export class DetailComponent implements OnInit {
     });
   }
 
+  userRatingId: number = 0;
+
   loadUserRating(): void {
     if (!this.movie) return;
     
     this.ratingService.getUserRating(this.movie.id).subscribe({
       next: (rating) => {
         this.userRating = rating?.rating || 0;
+        this.userRatingId = rating?.id || 0;
       },
       error: (error) => {
         console.error('Error loading user rating:', error);
@@ -136,8 +143,9 @@ export class DetailComponent implements OnInit {
 
     this.isSavingRating = true;
     this.ratingService.createOrUpdateRating(this.movie.id, this.tempRating).subscribe({
-      next: () => {
+      next: (rating) => {
         this.userRating = this.tempRating;
+        this.userRatingId = rating.id;
         this.isSavingRating = false;
         this.closeRatingModal();
         this.toastr.success('Calificación guardada', 'Éxito');

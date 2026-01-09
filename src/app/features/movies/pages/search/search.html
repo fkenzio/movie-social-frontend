@@ -31,9 +31,6 @@
     <div *ngFor="let movie of movies" class="movie-card" [routerLink]="['/movies/detail', movie.id]">
       <div class="movie-poster">
         <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" />
-        <div class="movie-rating">
-          ⭐ {{ movie.vote_average.toFixed(1) }}
-        </div>
       </div>
       <div class="movie-info">
         <h3>{{ movie.title }}</h3>

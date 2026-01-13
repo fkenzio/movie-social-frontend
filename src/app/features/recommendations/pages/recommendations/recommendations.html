@@ -8,7 +8,7 @@
   </div>
 
   <!-- Algorithm Info -->
-  <div *ngIf="selectedTab === 'personalized' && !isLoadingPersonalized && personalizedRecommendations.length > 0" class="algorithm-info">
+  <div *ngIf="selectedTab === 'personalized' && !isLoadingPersonalized && personalizedRecommendations && personalizedRecommendations.length > 0" class="algorithm-info">
     <div class="info-card">
       <span class="icon">{{ getAlgorithmIcon() }}</span>
       <div class="info-content">
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoadingPersonalized && personalizedRecommendations.length === 0" class="empty-state">
+    <div *ngIf="!isLoadingPersonalized && (!personalizedRecommendations || personalizedRecommendations.length === 0)" class="empty-state">
       <div class="empty-icon">🎬</div>
       <h2>Necesitamos saber más sobre tus gustos</h2>
       <p>Califica al menos 5 películas para recibir recomendaciones personalizadas</p>
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Movies Grid -->
-    <div *ngIf="!isLoadingPersonalized && personalizedRecommendations.length > 0" class="movies-grid">
+    <div *ngIf="!isLoadingPersonalized && personalizedRecommendations && personalizedRecommendations.length > 0" class="movies-grid">
       <div *ngFor="let movie of personalizedRecommendations" class="movie-card">
         <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
           <img 
@@ -78,7 +78,7 @@
           </div>
 
           <div class="movie-overlay">
-            <div class="movie-rating">
+            <div class="movie-rating" *ngIf="movie.vote_average">
               ⭐ {{ movie.vote_average.toFixed(1) }}
             </div>
           </div>
@@ -89,7 +89,7 @@
           <p class="movie-year" *ngIf="movie.release_date">
             {{ movie.release_date.substring(0, 4) }}
           </p>
-          <p class="reason">{{ movie.reason }}</p>
+          <p class="reason" *ngIf="movie.reason">{{ movie.reason }}</p>
         </div>
       </div>
     </div>
@@ -103,8 +103,15 @@
       <p>Cargando tendencias...</p>
     </div>
 
+    <!-- Empty State -->
+    <div *ngIf="!isLoadingTrending && (!trendingRecommendations || trendingRecommendations.length === 0)" class="empty-state">
+      <div class="empty-icon">🔥</div>
+      <h2>No hay tendencias disponibles</h2>
+      <p>Intenta más tarde</p>
+    </div>
+
     <!-- Movies Grid -->
-    <div *ngIf="!isLoadingTrending" class="movies-grid">
+    <div *ngIf="!isLoadingTrending && trendingRecommendations && trendingRecommendations.length > 0" class="movies-grid">
       <div *ngFor="let movie of trendingRecommendations" class="movie-card">
         <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
           <img 
@@ -115,7 +122,7 @@
           <div *ngIf="!movie.poster_path" class="no-poster">🎬</div>
 
           <div class="movie-overlay">
-            <div class="movie-rating">
+            <div class="movie-rating" *ngIf="movie.vote_average">
               ⭐ {{ movie.vote_average.toFixed(1) }}
             </div>
           </div>
@@ -140,14 +147,14 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoadingGenre && genreRecommendations.length === 0" class="empty-state">
+    <div *ngIf="!isLoadingGenre && (!genreRecommendations || genreRecommendations.length === 0)" class="empty-state">
       <div class="empty-icon">🎭</div>
       <h2>Aún no tenemos suficiente información</h2>
       <p>Califica películas para que identifiquemos tu género favorito</p>
     </div>
 
     <!-- Movies Grid -->
-    <div *ngIf="!isLoadingGenre && genreRecommendations.length > 0" class="movies-grid">
+    <div *ngIf="!isLoadingGenre && genreRecommendations && genreRecommendations.length > 0" class="movies-grid">
       <div *ngFor="let movie of genreRecommendations" class="movie-card">
         <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
           <img 
@@ -158,7 +165,7 @@
           <div *ngIf="!movie.poster_path" class="no-poster">🎬</div>
 
           <div class="movie-overlay">
-            <div class="movie-rating">
+            <div class="movie-rating" *ngIf="movie.vote_average">
               ⭐ {{ movie.vote_average.toFixed(1) }}
             </div>
           </div>

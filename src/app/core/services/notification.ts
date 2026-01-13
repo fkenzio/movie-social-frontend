@@ -10,7 +10,7 @@ import { Notification, NotificationStats } from '@core/models/notification.model
 })
 export class NotificationService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/notifications/`;
+  private apiUrl = `${environment.apiUrl}/notifications/`;  // ← Con trailing slash para evitar 307
   
   // Estado de notificaciones
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
@@ -53,7 +53,7 @@ export class NotificationService {
    * Obtener estadísticas de notificaciones
    */
   getStats(): Observable<NotificationStats> {
-    return this.http.get<NotificationStats>(`${this.apiUrl}/stats`).pipe(
+    return this.http.get<NotificationStats>(`${this.apiUrl}stats`).pipe(
       tap(stats => {
         this.unreadCountSubject.next(stats.unread);
       })
@@ -64,7 +64,7 @@ export class NotificationService {
    * Marcar notificación como leída
    */
   markAsRead(notificationId: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${notificationId}/read`, {}).pipe(
+    return this.http.patch(`${this.apiUrl}${notificationId}/read`, {}).pipe(
       tap(() => {
         // Actualizar localmente
         const currentNotifications = this.notificationsSubject.value;
@@ -84,7 +84,7 @@ export class NotificationService {
    * Marcar todas las notificaciones como leídas
    */
   markAllAsRead(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/read-all`, {}).pipe(
+    return this.http.post(`${this.apiUrl}read-all`, {}).pipe(
       tap(() => {
         // Actualizar todas localmente
         const currentNotifications = this.notificationsSubject.value;
@@ -101,7 +101,7 @@ export class NotificationService {
    * Eliminar notificación
    */
   deleteNotification(notificationId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${notificationId}`).pipe(
+    return this.http.delete(`${this.apiUrl}${notificationId}`).pipe(
       tap(() => {
         // Remover localmente
         const currentNotifications = this.notificationsSubject.value;
@@ -130,7 +130,7 @@ export class NotificationService {
 
     try {
       // Crear conexión SSE con token en query parameter
-      const url = `${this.apiUrl}/stream?token=${token}`;
+      const url = `${this.apiUrl}stream?token=${token}`;  // Sin el / porque apiUrl ya lo tiene
       this.eventSource = new EventSource(url);
 
       // Cuando se abre la conexión

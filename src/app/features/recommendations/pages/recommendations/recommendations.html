@@ -1,1 +1,177 @@
-<p>recommendations works!</p>
+<app-navbar></app-navbar>
+
+<div class="recommendations-container">
+  <!-- Header -->
+  <div class="recommendations-header">
+    <h1>🎯 Recomendaciones para Ti</h1>
+    <p>Películas seleccionadas especialmente según tus gustos</p>
+  </div>
+
+  <!-- Algorithm Info -->
+  <div *ngIf="selectedTab === 'personalized' && !isLoadingPersonalized && personalizedRecommendations.length > 0" class="algorithm-info">
+    <div class="info-card">
+      <span class="icon">{{ getAlgorithmIcon() }}</span>
+      <div class="info-content">
+        <strong>{{ getAlgorithmName() }}</strong>
+        <p>Basado en {{ basedOnRatings }} calificaciones tuyas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button 
+      class="tab-btn" 
+      [class.active]="selectedTab === 'personalized'"
+      (click)="changeTab('personalized')"
+    >
+      🎯 Personalizadas
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="selectedTab === 'trending'"
+      (click)="changeTab('trending')"
+    >
+      🔥 Tendencias
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="selectedTab === 'genre'"
+      (click)="changeTab('genre')"
+    >
+      🎭 Por Género
+    </button>
+  </div>
+
+  <!-- PERSONALIZED TAB -->
+  <div *ngIf="selectedTab === 'personalized'">
+    <!-- Loading -->
+    <div *ngIf="isLoadingPersonalized" class="loading">
+      <div class="spinner"></div>
+      <p>Generando recomendaciones personalizadas...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoadingPersonalized && personalizedRecommendations.length === 0" class="empty-state">
+      <div class="empty-icon">🎬</div>
+      <h2>Necesitamos saber más sobre tus gustos</h2>
+      <p>Califica al menos 5 películas para recibir recomendaciones personalizadas</p>
+      <button class="btn btn-primary" routerLink="/movies/search">
+        Buscar Películas para Calificar
+      </button>
+    </div>
+
+    <!-- Movies Grid -->
+    <div *ngIf="!isLoadingPersonalized && personalizedRecommendations.length > 0" class="movies-grid">
+      <div *ngFor="let movie of personalizedRecommendations" class="movie-card">
+        <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+          <img 
+            *ngIf="movie.poster_path" 
+            [src]="getImageUrl(movie.poster_path)" 
+            [alt]="movie.title"
+          />
+          <div *ngIf="!movie.poster_path" class="no-poster">🎬</div>
+
+          <!-- Match Score Badge -->
+          <div class="match-badge" [style.background-color]="getScoreColor(movie.score)">
+            {{ movie.score }}% Match
+          </div>
+
+          <div class="movie-overlay">
+            <div class="movie-rating">
+              ⭐ {{ movie.vote_average.toFixed(1) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="movie-info">
+          <h3 [routerLink]="['/movies/detail', movie.movie_tmdb_id]">{{ movie.title }}</h3>
+          <p class="movie-year" *ngIf="movie.release_date">
+            {{ movie.release_date.substring(0, 4) }}
+          </p>
+          <p class="reason">{{ movie.reason }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRENDING TAB -->
+  <div *ngIf="selectedTab === 'trending'">
+    <!-- Loading -->
+    <div *ngIf="isLoadingTrending" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando tendencias...</p>
+    </div>
+
+    <!-- Movies Grid -->
+    <div *ngIf="!isLoadingTrending" class="movies-grid">
+      <div *ngFor="let movie of trendingRecommendations" class="movie-card">
+        <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+          <img 
+            *ngIf="movie.poster_path" 
+            [src]="getImageUrl(movie.poster_path)" 
+            [alt]="movie.title"
+          />
+          <div *ngIf="!movie.poster_path" class="no-poster">🎬</div>
+
+          <div class="movie-overlay">
+            <div class="movie-rating">
+              ⭐ {{ movie.vote_average.toFixed(1) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="movie-info">
+          <h3 [routerLink]="['/movies/detail', movie.movie_tmdb_id]">{{ movie.title }}</h3>
+          <p class="movie-year" *ngIf="movie.release_date">
+            {{ movie.release_date.substring(0, 4) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENRE TAB -->
+  <div *ngIf="selectedTab === 'genre'">
+    <!-- Loading -->
+    <div *ngIf="isLoadingGenre" class="loading">
+      <div class="spinner"></div>
+      <p>Cargando por género favorito...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoadingGenre && genreRecommendations.length === 0" class="empty-state">
+      <div class="empty-icon">🎭</div>
+      <h2>Aún no tenemos suficiente información</h2>
+      <p>Califica películas para que identifiquemos tu género favorito</p>
+    </div>
+
+    <!-- Movies Grid -->
+    <div *ngIf="!isLoadingGenre && genreRecommendations.length > 0" class="movies-grid">
+      <div *ngFor="let movie of genreRecommendations" class="movie-card">
+        <div class="movie-poster" [routerLink]="['/movies/detail', movie.movie_tmdb_id]">
+          <img 
+            *ngIf="movie.poster_path" 
+            [src]="getImageUrl(movie.poster_path)" 
+            [alt]="movie.title"
+          />
+          <div *ngIf="!movie.poster_path" class="no-poster">🎬</div>
+
+          <div class="movie-overlay">
+            <div class="movie-rating">
+              ⭐ {{ movie.vote_average.toFixed(1) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="movie-info">
+          <h3 [routerLink]="['/movies/detail', movie.movie_tmdb_id]">{{ movie.title }}</h3>
+          <p class="movie-year" *ngIf="movie.release_date">
+            {{ movie.release_date.substring(0, 4) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

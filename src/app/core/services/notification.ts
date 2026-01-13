@@ -10,7 +10,7 @@ import { Notification, NotificationStats } from '@core/models/notification.model
 })
 export class NotificationService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/notifications`;
+  private apiUrl = `${environment.apiUrl}/notifications/`;
   
   // Estado de notificaciones
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);

@@ -78,6 +78,13 @@ export const routes: Routes = [
   },
 
   {
+  path: 'recommendations',
+  canActivate: [authGuard],
+  loadComponent: () => import('./features/recommendations/pages/recommendations/recommendations')
+    .then(m => m.RecommendationsComponent)
+  },
+
+  {
     path: '**',
     redirectTo: '/feed'
   }

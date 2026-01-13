@@ -23,31 +23,81 @@
       </a>
     </div>
 
-    <!-- User Menu -->
-    <div class="navbar-user">
-      <div class="user-info" (click)="toggleMenu()">
-        <div class="user-avatar">
-          {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'U' }}
+    <!-- Right Side: Notifications + User Menu -->
+    <div class="navbar-right">
+      <!-- Notification Bell -->
+      <div class="notification-bell">
+        <button class="bell-btn" (click)="toggleNotifications()" [class.has-unread]="unreadCount > 0">
+          🔔
+          <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div class="notifications-dropdown" [class.show]="isNotificationsOpen">
+          <div class="dropdown-header">
+            <h3>Notificaciones</h3>
+            <button *ngIf="unreadCount > 0" class="mark-all-btn" (click)="markAllAsRead()">
+              Marcar todas como leídas
+            </button>
+          </div>
+
+          <div class="notifications-list" *ngIf="!isLoadingNotifications">
+            <div *ngIf="notifications.length === 0" class="empty-state">
+              <p>No tienes notificaciones</p>
+            </div>
+
+            <div 
+              *ngFor="let notification of notifications" 
+              class="notification-item"
+              [class.unread]="!notification.is_read"
+              (click)="onNotificationClick(notification)"
+            >
+              <div class="notification-icon">
+                {{ getNotificationIcon(notification.type) }}
+              </div>
+              <div class="notification-content">
+                <p class="notification-message">{{ getNotificationMessage(notification) }}</p>
+                <span class="notification-time">{{ getTimeAgo(notification.created_at) }}</span>
+              </div>
+              <div class="unread-dot" *ngIf="!notification.is_read"></div>
+            </div>
+          </div>
+
+          <div class="loading-state" *ngIf="isLoadingNotifications">
+            <p>Cargando notificaciones...</p>
+          </div>
+
+          <div class="dropdown-footer">
+            <button class="view-all-btn" (click)="viewAllNotifications()">
+              Ver todas las notificaciones
+            </button>
+          </div>
         </div>
-        <span class="user-name hide-mobile">{{ currentUser?.username }}</span>
-        <span class="dropdown-icon">▼</span>
       </div>
 
-      <!-- Dropdown Menu -->
-      <div class="dropdown-menu" [class.show]="isMenuOpen">
-        <a routerLink="/profile" class="dropdown-item" (click)="closeMenu()">
-          👤 Mi Perfil
-        </a>
-        <a routerLink="/notifications" class="dropdown-item" (click)="closeMenu()">
-          🔔 Notificaciones
-        </a>
-        <a routerLink="/recommendations" class="dropdown-item" (click)="closeMenu()">
-          ✨ Recomendaciones
-        </a>
-        <hr class="dropdown-divider">
-        <button class="dropdown-item logout" (click)="logout()">
-           Cerrar Sesión
-        </button>
+      <!-- User Menu -->
+      <div class="navbar-user">
+        <div class="user-info" (click)="toggleMenu()">
+          <div class="user-avatar">
+            {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'U' }}
+          </div>
+          <span class="user-name hide-mobile">{{ currentUser?.username }}</span>
+          <span class="dropdown-icon">▼</span>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" [class.show]="isMenuOpen">
+          <a routerLink="/profile" class="dropdown-item" (click)="closeMenu()">
+            👤 Mi Perfil
+          </a>
+          <a routerLink="/recommendations" class="dropdown-item" (click)="closeMenu()">
+            ✨ Recomendaciones
+          </a>
+          <hr class="dropdown-divider">
+          <button class="dropdown-item logout" (click)="logout()">
+            🚪 Cerrar Sesión
+          </button>
+        </div>
       </div>
     </div>
 
@@ -70,6 +120,10 @@
     </a>
     <a routerLink="/rankings" routerLinkActive="active" class="mobile-link" (click)="closeMobileMenu()">
       Rankings
+    </a>
+    <a routerLink="/notifications" routerLinkActive="active" class="mobile-link" (click)="closeMobileMenu()">
+      🔔 Notificaciones 
+      <span class="badge-mobile" *ngIf="unreadCount > 0">({{ unreadCount }})</span>
     </a>
   </div>
 </nav>

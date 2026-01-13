@@ -66,6 +66,221 @@
   }
 }
 
+// ========== RIGHT SIDE (Notifications + User) ==========
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+// ========== NOTIFICATION BELL ==========
+.notification-bell {
+  position: relative;
+
+  .bell-btn {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: $spacing-xs;
+    color: $light-text;
+    transition: all 0.3s ease;
+    border-radius: $border-radius-sm;
+
+    &:hover {
+      background: $dark-bg;
+      transform: scale(1.1);
+    }
+
+    &.has-unread {
+      animation: ring 2s ease-in-out infinite;
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: $primary-color;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 10px;
+      min-width: 18px;
+      text-align: center;
+    }
+  }
+}
+
+@keyframes ring {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-10deg); }
+  20%, 40% { transform: rotate(10deg); }
+}
+
+// ========== NOTIFICATIONS DROPDOWN ==========
+.notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: $secondary-color;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  width: 380px;
+  max-height: 500px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    width: 320px;
+  }
+
+  .dropdown-header {
+    padding: $spacing-md;
+    border-bottom: 1px solid $dark-bg;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: $light-text;
+    }
+
+    .mark-all-btn {
+      background: none;
+      border: none;
+      color: $primary-color;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: $spacing-xs;
+      border-radius: $border-radius-sm;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: $dark-bg;
+      }
+    }
+  }
+
+  .notifications-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 400px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $dark-bg;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $gray-text;
+      border-radius: 3px;
+    }
+  }
+
+  .empty-state {
+    padding: $spacing-lg;
+    text-align: center;
+    color: $gray-text;
+  }
+
+  .loading-state {
+    padding: $spacing-lg;
+    text-align: center;
+    color: $gray-text;
+  }
+
+  .notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+
+    &:hover {
+      background: $dark-bg;
+    }
+
+    &.unread {
+      background: rgba(255, 59, 92, 0.05);
+    }
+
+    .notification-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+
+      .notification-message {
+        margin: 0 0 $spacing-xs 0;
+        color: $light-text;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+      }
+
+      .notification-time {
+        font-size: 0.75rem;
+        color: $gray-text;
+      }
+    }
+
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      background: $primary-color;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+  }
+
+  .dropdown-footer {
+    padding: $spacing-sm;
+    border-top: 1px solid $dark-bg;
+
+    .view-all-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      color: $primary-color;
+      padding: $spacing-sm;
+      cursor: pointer;
+      font-weight: 500;
+      border-radius: $border-radius-sm;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: $dark-bg;
+      }
+    }
+  }
+}
+
+// ========== USER MENU ==========
 .navbar-user {
   position: relative;
 
@@ -149,15 +364,11 @@
     }
 
     &.logout {
-      color: #ff4444;
-    }
+      color: #ff6b6b;
 
-    &:first-child {
-      border-radius: $border-radius-md $border-radius-md 0 0;
-    }
-
-    &:last-child {
-      border-radius: 0 0 $border-radius-md $border-radius-md;
+      &:hover {
+        background: rgba(255, 107, 107, 0.1);
+      }
     }
   }
 
@@ -168,6 +379,7 @@
   }
 }
 
+// ========== MOBILE ==========
 .mobile-menu-btn {
   display: none;
   background: none;
@@ -177,47 +389,59 @@
   cursor: pointer;
   padding: $spacing-xs;
 
-  @media (max-width: $tablet) {
+  @media (max-width: 768px) {
     display: block;
   }
 }
 
 .mobile-menu {
-  background: $darker-bg;
-  padding: $spacing-md 0;
   display: none;
   flex-direction: column;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+  background: $secondary-color;
+  border-top: 1px solid $dark-bg;
 
   &.show {
     display: flex;
-    max-height: 400px;
   }
 
   .mobile-link {
-    padding: $spacing-sm $spacing-md;
+    padding: $spacing-md;
     color: $light-text;
     text-decoration: none;
     transition: background 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    &:hover,
+    &:hover {
+      background: $dark-bg;
+    }
+
     &.active {
-      background: $secondary-color;
       color: $primary-color;
+      background: $dark-bg;
+    }
+
+    .badge-mobile {
+      background: $primary-color;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
     }
   }
 }
 
-@media (max-width: $tablet) {
-  .hide-mobile {
-    display: none !important;
+.hide-mobile {
+  @media (max-width: 768px) {
+    display: none;
   }
 }
 
-@media (min-width: $tablet) {
-  .hide-desktop {
-    display: none !important;
+.hide-desktop {
+  @media (min-width: 769px) {
+    display: none;
   }
 }

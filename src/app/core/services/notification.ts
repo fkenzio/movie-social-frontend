@@ -127,10 +127,8 @@ export class NotificationService {
 
     try {
       // Crear conexión SSE
-      const url = `${this.apiUrl}/stream`;
-      this.eventSource = new EventSource(url, {
-        withCredentials: true
-      });
+      const url = `${this.apiUrl}/stream?token=${token}`;
+      this.eventSource = new EventSource(url);
 
       // Cuando se abre la conexión
       this.eventSource.onopen = () => {

@@ -15,12 +15,6 @@ export interface RecommendedMovie {
   reason: string; // Por qué se recomienda
 }
 
-export interface RecommendationsResponse {
-  recommendations: RecommendedMovie[];
-  algorithm: 'collaborative' | 'content_based' | 'hybrid';
-  based_on_ratings: number; // Cantidad de ratings del usuario
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -31,9 +25,11 @@ export class RecommendationsService {
   /**
    * Obtener recomendaciones personalizadas para el usuario actual
    * Usa filtrado colaborativo basado en usuarios similares
+   * 
+   * IMPORTANTE: El backend devuelve un array directo, no un objeto con .recommendations
    */
-  getPersonalizedRecommendations(limit: number = 20): Observable<RecommendationsResponse> {
-    return this.http.get<RecommendationsResponse>(`${this.apiUrl}/personalized`, {
+  getPersonalizedRecommendations(limit: number = 20): Observable<RecommendedMovie[]> {
+    return this.http.get<RecommendedMovie[]>(`${this.apiUrl}/personalized`, {
       params: { limit: limit.toString() }
     });
   }

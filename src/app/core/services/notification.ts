@@ -39,8 +39,11 @@ export class NotificationService {
       params.unread_only = true;
     }
     
+    console.log('📡 Fetching notifications with params:', params);
+    
     return this.http.get<Notification[]>(this.apiUrl, { params }).pipe(
       tap(notifications => {
+        console.log('📥 Notifications received from API:', notifications);
         this.notificationsSubject.next(notifications);
       })
     );
@@ -126,7 +129,7 @@ export class NotificationService {
     }
 
     try {
-      // Crear conexión SSE
+      // Crear conexión SSE con token en query parameter
       const url = `${this.apiUrl}/stream?token=${token}`;
       this.eventSource = new EventSource(url);
 

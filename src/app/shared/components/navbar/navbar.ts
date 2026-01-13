@@ -102,6 +102,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.isMenuOpen = false;
     }
     
+    // Debug log
+    console.log('🔔 Toggling notifications:', {
+      isOpen: this.isNotificationsOpen,
+      currentNotifications: this.notifications.length,
+      unreadCount: this.unreadCount
+    });
+    
     if (this.isNotificationsOpen && this.notifications.length === 0) {
       // Cargar notificaciones si aún no se han cargado
       this.loadNotifications();
@@ -109,12 +116,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private loadNotifications(): void {
+    console.log('📡 Loading notifications...');
     this.isLoadingNotifications = true;
     this.notificationService.getNotifications(0, 10).subscribe({
-      next: () => {
+      next: (notifications) => {
+        console.log('✅ Notifications loaded:', notifications);
         this.isLoadingNotifications = false;
       },
-      error: () => {
+      error: (error) => {
+        console.error('❌ Error loading notifications:', error);
         this.isLoadingNotifications = false;
       }
     });
